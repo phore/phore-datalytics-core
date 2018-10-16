@@ -1,0 +1,26 @@
+{
+  "name": "phore/datalytics-core",
+  "description": "Data analyzing framework",
+  "license": "MIT",
+  "authors": [
+    { "name": "Matthias Leuffen", "email": "m@tth.es" }
+  ],
+  "repositories": [
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Phore\\Datalytics\\Core": "src/"
+    },
+    "files": [
+
+    ]
+  },
+  "minimum-stability": "dev",
+  "require-dev": {
+    "nette/tester": "^2.1@dev"
+  }
+}
+
