@@ -46,7 +46,7 @@ class TimeSeries
             $data[$name] = $aggregator->getAggregated();
             $aggregator->reset();
         }
-        $this->outputFormat->setData($ts, $data);
+        $this->outputFormat->sendData($ts, $data);
     }
 
     private function _fill(float $ts)
@@ -56,7 +56,7 @@ class TimeSeries
             // Don't reset aggregator
             $data[$name] = null;
         }
-        $this->outputFormat->setData($ts, $data);
+        $this->outputFormat->sendData($ts, $data);
     }
 
 
