@@ -6,15 +6,13 @@
  * Time: 16:03
  */
 
-namespace Phore\Datalytics\Core\DataFormat;
+namespace Phore\Datalytics\Core\OutputFormat;
 
 
 interface OutputFormat
 {
 
     public function setData(float $ts, array $data);
-
-    public function send();
 
     public function close();
 

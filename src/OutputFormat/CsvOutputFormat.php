@@ -6,7 +6,7 @@
  * Time: 16:06
  */
 
-namespace Phore\Datalytics\Core\DataFormat;
+namespace Phore\Datalytics\Core\OutputFormat;
 
 
 class CsvOutputFormat

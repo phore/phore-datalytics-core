@@ -10,7 +10,7 @@ namespace Phore\Datalytics\Core;
 
 
 use Phore\Datalytics\Core\Aggregator\Aggregator;
-use Phore\Datalytics\Core\DataFormat\OutputFormat;
+use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 
 class TimeSeries
 {
@@ -26,17 +26,13 @@ class TimeSeries
     private $outputFormat;
 
     private $lastFlushTs = null;
-    private $sampleInterval = null;
+    private $sampleInterval = 1;
+
 
     public function setSampleInterval(float $sampleInterval)
     {
         $this->sampleInterval = $sampleInterval;
     }
-
-
-
-
-
 
     private function _getFlatTs (float $ts)
     {
@@ -66,10 +62,25 @@ class TimeSeries
 
     private function _checkMustFill (float $nextTs)
     {
-        while ($this->lastFlushTs < $this->_getFlatTs($nextTs + $this->sampleInterval)) {
-            $nextTs = $nextTs + $this->sampleInterval;
+        $fillTs = $this->lastFlushTs + $this->sampleInterval;
+
+        while ($fillTs < $nextTs) {
             $this->_fill($nextTs);
+            $this->lastFlushTs = $fillTs;
+            $fillTs += $this->sampleInterval;
         }
+    }
+
+    public function define($name, Aggregator $aggregator) : self
+    {
+        $this->signals[$name] = $aggregator;
+        return $this;
+    }
+
+    public function setOutputFormat(OutputFormat $outputFormat) : self
+    {
+        $this->outputFormat = $outputFormat;
+        return $this;
     }
 
     public function setStartTs (float $startTimestamp)
@@ -86,7 +97,7 @@ class TimeSeries
 
         if($this->lastFlushTs < $flatTs) {
             $this->_checkMustFill($flatTs);
-            $this->_flush($flatTs);
+            $this->_flush($this->lastFlushTs);
             $this->lastFlushTs = $flatTs;
         }
 
