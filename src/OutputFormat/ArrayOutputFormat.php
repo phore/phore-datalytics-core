@@ -16,8 +16,8 @@ class ArrayOutputFormat implements OutputFormat
 
     public $data = [];
 
-
-    public function setData(float $ts, array $data)
+    
+    public function sendData(float $ts, array $data)
     {
         $this->data["$ts"] = $data;
     }

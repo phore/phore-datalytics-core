@@ -12,7 +12,7 @@ namespace Phore\Datalytics\Core\OutputFormat;
 interface OutputFormat
 {
 
-    public function setData(float $ts, array $data);
+    public function sendData(float $ts, array $data);
 
     public function close();
 

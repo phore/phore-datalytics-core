@@ -201,11 +201,10 @@ run_shell() {
         shellarg="/bin/bash"
         if [ "$ARGUMENT" != "" ]
         then
-            shellarg="/bin/bash -c kick $ARGUMENT"
+            shellarg="kick $ARGUMENT"
         fi;
 
-        echo $shellarg
-        docker exec $terminal --user user -e "DEV_TTYID=[SUB]" $CONTAINER_NAME $(printf %q $shellarg)
+        docker exec $terminal --user user -e "DEV_TTYID=[SUB]" $CONTAINER_NAME $shellarg
 
         echo -e $COLOR_CYAN;
         echo "<=== [kickstart.sh] Leaving container."
