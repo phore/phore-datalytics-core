@@ -23,13 +23,13 @@ class AggregatorFactoryTest extends TestCase
     public function testGetAggregator()
     {
         $aggregatorFactory = new AggregatorFactory();
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->getAggregator("avg"));
-        Assert::assertEquals(new CountAggregator(), $aggregatorFactory->getAggregator("count"));
-        Assert::assertEquals(new FirstAggregator(), $aggregatorFactory->getAggregator("first"));
-        Assert::assertEquals(new MaxAggregator(), $aggregatorFactory->getAggregator("max"));
-        Assert::assertEquals(new MinAggregator(), $aggregatorFactory->getAggregator("min"));
-        Assert::assertEquals(new SumAggregator(), $aggregatorFactory->getAggregator("sum"));
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->getAggregator());
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->getAggregator("abc"));
+        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator("avg"));
+        Assert::assertEquals(new CountAggregator(), $aggregatorFactory->createAggregator("count"));
+        Assert::assertEquals(new FirstAggregator(), $aggregatorFactory->createAggregator("first"));
+        Assert::assertEquals(new MaxAggregator(), $aggregatorFactory->createAggregator("max"));
+        Assert::assertEquals(new MinAggregator(), $aggregatorFactory->createAggregator("min"));
+        Assert::assertEquals(new SumAggregator(), $aggregatorFactory->createAggregator("sum"));
+        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator());
+        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator("abc"));
     }
 }
