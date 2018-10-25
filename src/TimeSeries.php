@@ -12,6 +12,7 @@ namespace Phore\Datalytics\Core;
 use Phore\Datalytics\Core\Aggregator\Aggregator;
 use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 
+
 class TimeSeries
 {
 
@@ -27,7 +28,12 @@ class TimeSeries
 
     private $lastFlushTs = null;
     private $sampleInterval = 1;
+    private $fillEmpty = false;
 
+    public function setFillEmpty(bool $fillEmpty)
+    {
+        $this->fillEmpty = $fillEmpty;
+    }
 
     public function setSampleInterval(float $sampleInterval)
     {
@@ -51,6 +57,8 @@ class TimeSeries
 
     private function _fill(float $ts)
     {
+        if($this->fillEmpty === false)
+            return;
         $data = [];
         foreach (array_keys($this->signals) as $name) {
             // Don't reset aggregator
@@ -65,7 +73,7 @@ class TimeSeries
         $fillTs = $this->lastFlushTs + $this->sampleInterval;
 
         while ($fillTs < $nextTs) {
-            $this->_fill($nextTs);
+            $this->_fill($fillTs);
             $this->lastFlushTs = $fillTs;
             $fillTs += $this->sampleInterval;
         }

@@ -45,7 +45,11 @@ class TimeSeriesTest extends TestCase
 
         $ts->push(11, "col1", 4);
         $this->assertArrayHasKey("10", $this->outputFormat->data);
-        $ts->close(12);
+        $ts->close(1535934867);
     }
 
+    public function testFill()
+    {
+
+    }
 }
