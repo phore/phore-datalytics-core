@@ -31,7 +31,7 @@ class TimeSeriesTest extends TestCase
         return $ts;
     }
 
-    protected function _createTsWith() : TimeSeries
+    protected function _createTs() : TimeSeries
     {
         $ts = new TimeSeries(10,15);
         $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
@@ -41,7 +41,7 @@ class TimeSeriesTest extends TestCase
 
     public function testOutputFlushedWithStartTimestamp()
     {
-        $ts = $this->_createTsWithFillEmpty();
+        $ts = $this->_createTs();
 
         $ts->push(10, "col1", 1);
         $ts->push(10.5, "col1", 2);
@@ -51,8 +51,10 @@ class TimeSeriesTest extends TestCase
 
         $ts->push(11, "col1", 4);
         $this->assertArrayHasKey("10", $this->outputFormat->data);
-        print_r($this->outputFormat->data);
+
         $ts->close();
+        print_r($this->outputFormat->data);
+        $this->assertArrayHasKey("11", $this->outputFormat->data);
     }
 
 

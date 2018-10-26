@@ -21,12 +21,16 @@ class TimeSeries
      */
     private $signals = [];
 
+    private $signalBufferLen = 0;
+
     /**
      * @var OutputFormat
      */
     private $outputFormat;
 
     private $lastFlushTs = null;
+    private $lastPushTs = null;
+
     private $sampleInterval;
     private $fillEmpty;
     private $startTs;
@@ -38,7 +42,9 @@ class TimeSeries
         $this->sampleInterval = $sampleInterval;
         $this->startTs = $startTs;
         $this->endTs = $endTs;
-        $this->lastFlushTs = $this->_getFlatTs($startTs)-1;
+        if ($fillEmpty) {
+            $this->lastFlushTs = $this->_getFlatTs($startTs) - $sampleInterval;
+        }
     }
 
 
@@ -61,6 +67,9 @@ class TimeSeries
 
     private function _flush(float $ts)
     {
+        if ($this->signalBufferLen === 0)
+            return;
+
         $data = [];
         foreach ($this->signals as $name => $aggregator) {
             $data[$name] = $aggregator->getAggregated();
@@ -68,6 +77,7 @@ class TimeSeries
         }
 
         $this->outputFormat->sendData($ts, $data);
+        $this->signalBufferLen = 0;
     }
 
     private function _fill(float $ts)
@@ -101,8 +111,8 @@ class TimeSeries
         }
 
         if($this->lastFlushTs < $flatTs) {
-            $this->_checkMustFill($flatTs);
-            $this->_flush($flatTs); //$this->lastFlushTs
+            //$this->_checkMustFill($flatTs);
+            $this->_flush($this->lastFlushTs); //$this->lastFlushTs
             $this->lastFlushTs = $flatTs;
         }
 
@@ -110,16 +120,17 @@ class TimeSeries
             return;
 
         $this->signals[$signalName]->addValue($value);
+        $this->signalBufferLen++;
+        $this->lastPushTs = $timestamp;
 
     }
 
     public function close()
     {
-        $flatTs = $this->_getFlatTs($this->endTs);
-        if($this->lastFlushTs < $flatTs) {
-            $this->_checkMustFill($flatTs);
-            $this->_flush($flatTs);
-            $this->lastFlushTs = $flatTs;
+        $this->_flush($this->lastPushTs);
+
+        if ($this->fillEmpty) {
+            $this->_checkMustFill($this->endTs);
         }
     }
 
