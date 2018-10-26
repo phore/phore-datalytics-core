@@ -40,6 +40,17 @@ class TimeSeries
         $this->sampleInterval = $sampleInterval;
     }
 
+    public function setOutputFormat(OutputFormat $outputFormat) : self
+    {
+        $this->outputFormat = $outputFormat;
+        return $this;
+    }
+
+    public function setStartTs (float $startTimestamp)
+    {
+        $this->lastFlushTs = $this->_getFlatTs($startTimestamp);
+    }
+
     private function _getFlatTs (float $ts)
     {
         return ((int)($ts / $this->sampleInterval)) * $this->sampleInterval;
@@ -52,6 +63,7 @@ class TimeSeries
             $data[$name] = $aggregator->getAggregated();
             $aggregator->reset();
         }
+
         $this->outputFormat->sendData($ts, $data);
     }
 
@@ -85,17 +97,6 @@ class TimeSeries
         return $this;
     }
 
-    public function setOutputFormat(OutputFormat $outputFormat) : self
-    {
-        $this->outputFormat = $outputFormat;
-        return $this;
-    }
-
-    public function setStartTs (float $startTimestamp)
-    {
-        $this->lastFlushTs = $this->_getFlatTs($startTimestamp);
-    }
-
     public function push(float $timestamp, string $signalName, $value)
     {
         $flatTs = $this->_getFlatTs($timestamp);
@@ -109,7 +110,7 @@ class TimeSeries
             $this->lastFlushTs = $flatTs;
         }
 
-        if ( ! isset ($this->signals[$signalName]))
+       if ( ! isset ($this->signals[$signalName]))
             return;
 
         $this->signals[$signalName]->addValue($value);

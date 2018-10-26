@@ -31,7 +31,7 @@ class TimeSeriesTest extends TestCase
         $ts->setStartTs(10);
         return $ts;
     }
-
+/*
     public function testOutputFlushedWithStartTimestamp()
     {
         $ts = $this->_createTs();
@@ -45,11 +45,22 @@ class TimeSeriesTest extends TestCase
 
         $ts->push(11, "col1", 4);
         $this->assertArrayHasKey("10", $this->outputFormat->data);
-        $ts->close(1535934867);
+        print_r($this->outputFormat->data);
+        $ts->close(15);
     }
-
-    public function testFill()
+*/
+   public function testFill()
     {
+        $ts = $this->_createTs();
+        $ts->setFillEmpty(true);
+        $ts->define("col1",new SumAggregator());
+        $ts->push(10, "col1", 1);
+        $ts->push(11, "col1", 2);
+        $ts->push(12, "col1", 3);
+        //echo $this->outputFormat->data[0];
 
+        $ts->close(16);
+        print_r($this->outputFormat->data);
+        $this->assertTrue(false);
     }
 }
