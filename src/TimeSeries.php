@@ -9,6 +9,7 @@
 namespace Phore\Datalytics\Core;
 
 
+use http\Exception\InvalidArgumentException;
 use Phore\Datalytics\Core\Aggregator\Aggregator;
 use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 
@@ -106,6 +107,10 @@ class TimeSeries
     public function push(float $timestamp, string $signalName, $value)
     {
         $flatTs = $this->_getFlatTs($timestamp);
+
+        if($flatTs < $this->lastFlushTs)
+            throw new InvalidArgumentException("Timestamp nt in cronological order");
+
         if($this->lastFlushTs === null) {
             $this->lastFlushTs = $flatTs;
         }

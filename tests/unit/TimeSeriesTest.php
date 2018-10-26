@@ -91,4 +91,17 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(4 , $this->outputFormat->data["12"]["col1"]);
         $this->assertEquals(4 , $this->outputFormat->data["13"]["col1"]);
     }
+
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Timestamp nt in cronological order
+     */
+    public function testException()
+    {
+        $ts = $this->_createTsWithFillEmpty();
+        $ts->push(12, "col1", 4);
+        $ts->push(10, "col1", 1);
+        $ts->push(13, "col1", 4);
+    }
 }
