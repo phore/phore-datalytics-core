@@ -95,7 +95,7 @@ class TimeSeriesTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Timestamp nt in cronological order
+     * @expectedExceptionMessage Timestamp not in cronological order
      */
     public function testException()
     {

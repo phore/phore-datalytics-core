@@ -109,7 +109,7 @@ class TimeSeries
         $flatTs = $this->_getFlatTs($timestamp);
 
         if($flatTs < $this->lastFlushTs)
-            throw new InvalidArgumentException("Timestamp nt in cronological order");
+            throw new InvalidArgumentException("Timestamp not in cronological order");
 
         if($this->lastFlushTs === null) {
             $this->lastFlushTs = $flatTs;
