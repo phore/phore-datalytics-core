@@ -111,8 +111,8 @@ class TimeSeries
         }
 
         if($this->lastFlushTs < $flatTs) {
-            //$this->_checkMustFill($flatTs);
-            $this->_flush($this->lastFlushTs); //$this->lastFlushTs
+            $this->_flush($this->lastFlushTs);
+            $this->_checkMustFill($flatTs);
             $this->lastFlushTs = $flatTs;
         }
 
@@ -130,7 +130,7 @@ class TimeSeries
         $this->_flush($this->lastPushTs);
 
         if ($this->fillEmpty) {
-            $this->_checkMustFill($this->endTs);
+            $this->_checkMustFill($this->endTs + $this->sampleInterval);
         }
     }
 
