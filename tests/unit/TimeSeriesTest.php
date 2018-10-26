@@ -57,8 +57,6 @@ class TimeSeriesTest extends TestCase
         $ts->push(10, "col1", 1);
         $ts->push(11, "col1", 2);
         $ts->push(12, "col1", 3);
-        //echo $this->outputFormat->data[0];
-
         $ts->close(16);
         print_r($this->outputFormat->data);
         $this->assertTrue(false);

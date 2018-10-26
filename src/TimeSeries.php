@@ -104,22 +104,29 @@ class TimeSeries
             $this->lastFlushTs = $flatTs;
         }
 
-        if($this->lastFlushTs < $flatTs) {
+        if($this->lastFlushTs <= $flatTs) { // <
             $this->_checkMustFill($flatTs);
-            $this->_flush($this->lastFlushTs);
+
+            if ( ! isset ($this->signals[$signalName]))
+                return;
+
+            $this->signals[$signalName]->addValue($value);
+
+            $this->_flush($flatTs); // $this->lastFlushTs
             $this->lastFlushTs = $flatTs;
         }
 
-       if ( ! isset ($this->signals[$signalName]))
+        /*if ( ! isset ($this->signals[$signalName]))
             return;
 
-        $this->signals[$signalName]->addValue($value);
+        $this->signals[$signalName]->addValue($value);*/
+
+
     }
 
     public function close(float $endTs)
     {
         $flatTs = $this->_getFlatTs($endTs);
-
         if($this->lastFlushTs < $flatTs) {
             $this->_checkMustFill($flatTs);
             $this->_flush($flatTs);
