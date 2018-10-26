@@ -79,14 +79,13 @@ class TimeSeries
         $this->outputFormat->sendData($ts, $data);
     }
 
-
     private function _checkMustFill (float $nextTs)
     {
-        $fillTs = $this->lastFlushTs + $this->sampleInterval;
+        $fillTs = $this->lastFlushTs + $this->sampleInterval; // warum + sampleInterval ??
 
-        while ($fillTs < $nextTs) {
-            $this->_fill($fillTs);
-            $this->lastFlushTs = $fillTs;
+        while ($fillTs <= $nextTs) { //<
+            $this->_fill($fillTs); //$fillTs
+            $this->lastFlushTs = $fillTs;   // warum abfrage nicht einfach über $lastFlushTs wenn der eh hochgezählt wird
             $fillTs += $this->sampleInterval;
         }
     }
@@ -106,12 +105,12 @@ class TimeSeries
 
         if($this->lastFlushTs <= $flatTs) { // <
             $this->_checkMustFill($flatTs);
-
+            //
             if ( ! isset ($this->signals[$signalName]))
                 return;
 
             $this->signals[$signalName]->addValue($value);
-
+            //
             $this->_flush($flatTs); // $this->lastFlushTs
             $this->lastFlushTs = $flatTs;
         }
@@ -129,7 +128,7 @@ class TimeSeries
         $flatTs = $this->_getFlatTs($endTs);
         if($this->lastFlushTs < $flatTs) {
             $this->_checkMustFill($flatTs);
-            $this->_flush($flatTs);
+            //$this->_flush($flatTs);
             $this->lastFlushTs = $flatTs;
         }
     }
