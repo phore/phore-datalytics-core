@@ -27,18 +27,20 @@ class TimeSeries
     private $outputFormat;
 
     private $lastFlushTs = null;
-    private $sampleInterval = 1;
-    private $fillEmpty = false;
+    private $sampleInterval;
+    private $fillEmpty;
+    private $startTs;
+    private $endTs;
 
-    public function setFillEmpty(bool $fillEmpty)
+    public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1)
     {
         $this->fillEmpty = $fillEmpty;
+        $this->sampleInterval = $sampleInterval;
+        $this->startTs = $startTs;
+        $this->endTs = $endTs;
+        $this->lastFlushTs = $this->_getFlatTs($startTs)-1;
     }
 
-    public function setSampleInterval(float $sampleInterval)
-    {
-        $this->sampleInterval = $sampleInterval;
-    }
 
     public function setOutputFormat(OutputFormat $outputFormat) : self
     {
@@ -46,9 +48,10 @@ class TimeSeries
         return $this;
     }
 
-    public function setStartTs (float $startTimestamp)
+    public function define($name, Aggregator $aggregator) : self
     {
-        $this->lastFlushTs = $this->_getFlatTs($startTimestamp);
+        $this->signals[$name] = $aggregator;
+        return $this;
     }
 
     private function _getFlatTs (float $ts)
@@ -81,19 +84,13 @@ class TimeSeries
 
     private function _checkMustFill (float $nextTs)
     {
-        $fillTs = $this->lastFlushTs + $this->sampleInterval; // warum + sampleInterval ??
+        $fillTs = $this->lastFlushTs + $this->sampleInterval;
 
-        while ($fillTs <= $nextTs) { //<
-            $this->_fill($fillTs); //$fillTs
-            $this->lastFlushTs = $fillTs;   // warum abfrage nicht einfach über $lastFlushTs wenn der eh hochgezählt wird
+        while ($fillTs < $nextTs) {
+            $this->_fill($fillTs);
+            $this->lastFlushTs = $fillTs;
             $fillTs += $this->sampleInterval;
         }
-    }
-
-    public function define($name, Aggregator $aggregator) : self
-    {
-        $this->signals[$name] = $aggregator;
-        return $this;
     }
 
     public function push(float $timestamp, string $signalName, $value)
@@ -103,32 +100,25 @@ class TimeSeries
             $this->lastFlushTs = $flatTs;
         }
 
-        if($this->lastFlushTs <= $flatTs) { // <
+        if($this->lastFlushTs < $flatTs) {
             $this->_checkMustFill($flatTs);
-            //
-            if ( ! isset ($this->signals[$signalName]))
-                return;
-
-            $this->signals[$signalName]->addValue($value);
-            //
-            $this->_flush($flatTs); // $this->lastFlushTs
+            $this->_flush($flatTs); //$this->lastFlushTs
             $this->lastFlushTs = $flatTs;
         }
 
-        /*if ( ! isset ($this->signals[$signalName]))
+        if ( ! isset ($this->signals[$signalName]))
             return;
 
-        $this->signals[$signalName]->addValue($value);*/
-
+        $this->signals[$signalName]->addValue($value);
 
     }
 
-    public function close(float $endTs)
+    public function close()
     {
-        $flatTs = $this->_getFlatTs($endTs);
+        $flatTs = $this->_getFlatTs($this->endTs);
         if($this->lastFlushTs < $flatTs) {
             $this->_checkMustFill($flatTs);
-            //$this->_flush($flatTs);
+            $this->_flush($flatTs);
             $this->lastFlushTs = $flatTs;
         }
     }
