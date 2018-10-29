@@ -25,7 +25,7 @@ class TimeSeriesTest extends TestCase
 
     protected function _createTsWithFillEmpty() : TimeSeries
     {
-        $ts = new TimeSeries(10,13, true);
+        $ts = new TimeSeries(10,14, true);
         $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
         $ts->define("col1", new SumAggregator());
         return $ts;
@@ -33,7 +33,15 @@ class TimeSeriesTest extends TestCase
 
     protected function _createTs() : TimeSeries
     {
-        $ts = new TimeSeries(10,13);
+        $ts = new TimeSeries(10,14);
+        $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
+        $ts->define("col1", new SumAggregator());
+        return $ts;
+    }
+
+    protected function _createShortTs()
+    {
+        $ts = new TimeSeries(10,11);
         $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
         $ts->define("col1", new SumAggregator());
         return $ts;
@@ -103,5 +111,22 @@ class TimeSeriesTest extends TestCase
         $ts->push(12.1, "col1", 4);
         $ts->push(10.1, "col1", 1);
         $ts->push(13.1, "col1", 4);
+    }
+
+    public function testTsEqualEndTs()
+    {
+        $ts = $this->_createShortTs();
+        $ts->push(10, "col1", 4);
+        $ts->push(11, "col1", 4);
+        $ts->close();
+        $this->assertArrayNotHasKey(11, $this->outputFormat->data);
+    }
+
+    public function testTsEqualStartTs()
+    {
+        $ts = $this->_createShortTs();
+        $ts->push(10, "col1", 4);
+        $ts->close();
+        $this->assertArrayHasKey(10, $this->outputFormat->data);
     }
 }
