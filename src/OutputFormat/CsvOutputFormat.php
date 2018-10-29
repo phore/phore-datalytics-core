@@ -17,7 +17,7 @@ class CsvOutputFormat implements OutputFormat
     private $header = [];
     private $headerSend = false;
     private $outputHeandler;
-    private$delimiter;
+    private $delimiter;
 
     public function __construct(FileStream $res = null, string $delimiter = "\t")
     {
@@ -52,7 +52,7 @@ class CsvOutputFormat implements OutputFormat
         $this->_ensureHeaderSend();
         $arr = [$ts];
         foreach ($this->header as $signalName => $alias) {
-            if(!isset($data[$signalName]))
+            if(!array_key_exists($signalName, $data))
                 throw new \InvalidArgumentException("Data missing for SignalName: '$signalName'");
             $arr[] = $data[$signalName];
         }
