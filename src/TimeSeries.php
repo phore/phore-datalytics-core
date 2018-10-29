@@ -108,6 +108,9 @@ class TimeSeries
     {
         $flatTs = $this->_getFlatTs($timestamp);
 
+        if(!($this->startTs <= $flatTs && $this->endTs > $flatTs))
+            return;
+
         if($flatTs < $this->lastFlushTs)
             throw new \InvalidArgumentException("Timestamp not in cronological order");
 
