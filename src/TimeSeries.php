@@ -138,7 +138,7 @@ class TimeSeries
         $this->_flush($this->lastPushTs);
 
         if ($this->fillEmpty) {
-            $this->_checkMustFill($this->endTs + $this->sampleInterval);
+            $this->_checkMustFill($this->endTs);
         }
     }
 

@@ -122,6 +122,16 @@ class TimeSeriesTest extends TestCase
         $this->assertArrayNotHasKey(11, $this->outputFormat->data);
     }
 
+    public function testTsEqualEndTsWithFillEmpty()
+    {
+        $ts = $this->_createTsWithFillEmpty();
+        $ts->push(10.1, "col1", 4);
+        $ts->push(11.1, "col1", 4);
+        $ts->push(14.1, "col1", 4);
+        $ts->close();
+        $this->assertArrayNotHasKey(14, $this->outputFormat->data);
+    }
+
     public function testTsEqualStartTs()
     {
         $ts = $this->_createShortTs();
