@@ -52,10 +52,13 @@ class CsvOutputFormat implements OutputFormat
         $this->_ensureHeaderSend();
         $arr = [$ts];
         foreach ($this->header as $signalName => $alias) {
-            if(!array_key_exists($signalName, $data))
+            if(! array_key_exists($signalName, $data))
                 throw new \InvalidArgumentException("Data missing for SignalName: '$signalName'");
             $arr[] = $data[$signalName];
         }
+        if(empty($this->header))
+            throw new \InvalidArgumentException("No SignalNames set");
+
         $this->outputHeandler->fputcsv($arr, $this->delimiter);
         return true;
     }
