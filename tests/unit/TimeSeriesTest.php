@@ -116,8 +116,8 @@ class TimeSeriesTest extends TestCase
     public function testTsEqualEndTs()
     {
         $ts = $this->_createShortTs();
-        $ts->push(10, "col1", 4);
-        $ts->push(11, "col1", 4);
+        $ts->push(10.1, "col1", 4);
+        $ts->push(11.1, "col1", 4);
         $ts->close();
         $this->assertArrayNotHasKey(11, $this->outputFormat->data);
     }
@@ -125,7 +125,7 @@ class TimeSeriesTest extends TestCase
     public function testTsEqualStartTs()
     {
         $ts = $this->_createShortTs();
-        $ts->push(10, "col1", 4);
+        $ts->push(10.1, "col1", 4);
         $ts->close();
         $this->assertArrayHasKey(10, $this->outputFormat->data);
     }
