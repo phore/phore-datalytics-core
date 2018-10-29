@@ -12,6 +12,8 @@ namespace Phore\Datalytics\Core\OutputFormat;
 interface OutputFormat
 {
 
+    public function mapName(string $name, string $alias = null);
+
     public function sendData(float $ts, array $data);
 
     public function close();

@@ -21,9 +21,9 @@ class CsvOutputFormatTest extends TestCase
     {
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
-        $csvOutputFormat->addHeader("erstes");
-        $csvOutputFormat->addHeader("zweites");
-        $csvOutputFormat->addHeader("drittes");
+        $csvOutputFormat->mapName("erstes");
+        $csvOutputFormat->mapName("zweites");
+        $csvOutputFormat->mapName("drittes");
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>4, "neu2"=>5, "neu3" =>6]));
         $csvOutputFormat->close();

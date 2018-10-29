@@ -16,6 +16,7 @@ class CsvEventOutputFormat implements OutputFormat
 
     private $outputHeandler;
     private$delimiter;
+    private $header = [];
 
     public function __construct(FileStream $res = null, string $delimiter = "\t")
     {
@@ -23,6 +24,13 @@ class CsvEventOutputFormat implements OutputFormat
             $res = phore_file("php://output")->fopen("w");
         $this->outputHeandler = $res;
         $this->delimiter = $delimiter;
+    }
+
+    public function mapName(string $signalName, string $headerAlias = null)
+    {
+        if($headerAlias === null)
+            $headerAlias = $signalName;
+        $this->header[$signalName] = $headerAlias;
     }
 
     public function sendData(float $ts, array $data)

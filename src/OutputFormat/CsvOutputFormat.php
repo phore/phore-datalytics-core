@@ -31,18 +31,15 @@ class CsvOutputFormat implements OutputFormat
     {
         if($this->headerSend === true)
             return;
-        $arr = [];
-        $arr[0] = "ts";
-        $i = 1;
-        foreach ($this->header as $head) {
-            $arr[$i] = $head;
-            $i++;
+        $arr = ["ts"];
+        foreach ($this->header as $signalName => $alias) {
+            $arr[] = $alias;
         }
         $this->outputHeandler->fputcsv($arr,$this->delimiter);
         $this->headerSend = true;
     }
 
-    public function addHeader(string $signalName, string $headerAlias = null)
+    public function mapName(string $signalName, string $headerAlias = null)
     {
         if($headerAlias === null)
             $headerAlias = $signalName;
@@ -53,12 +50,11 @@ class CsvOutputFormat implements OutputFormat
     {
 
         $this->_ensureHeaderSend();
-        $arr = [];
-        $arr[0] = $ts;
-        $i = 1;
-        foreach ($data as $item) {
-            $arr[$i] = $item;
-            $i++;
+        $arr = [$ts];
+        foreach ($this->header as $signalName => $alias) {
+            if(!isset($data[$signalName]))
+                throw new \InvalidArgumentException("Data missing for SignalName: '$signalName'");
+            $arr[] = $data[$signalName];
         }
         $this->outputHeandler->fputcsv($arr, $this->delimiter);
         return true;
