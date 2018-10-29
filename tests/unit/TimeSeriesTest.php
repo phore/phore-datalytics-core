@@ -42,10 +42,10 @@ class TimeSeriesTest extends TestCase
     public function testOutputFlushedWithStartTimestampFillEmptyFalse()
     {
         $ts = $this->_createTs();
-        $ts->push(10, "col1", 1);
+        $ts->push(10.1, "col1", 1);
         $ts->push(10.5, "col1", 2);
         $this->assertEmpty($this->outputFormat->data);
-        $ts->push(11, "col1", 4);
+        $ts->push(11.1, "col1", 4);
         $this->assertArrayHasKey("10", $this->outputFormat->data);
         $ts->close();
         $this->assertArrayHasKey("11", $this->outputFormat->data);
@@ -67,11 +67,11 @@ class TimeSeriesTest extends TestCase
     public function testFillBefore()
     {
         $ts = $this->_createTsWithFillEmpty();
-        $ts->push(11, "col1", 1);
+        $ts->push(11.1, "col1", 1);
         $ts->push(11.5, "col1", 2);
-        $ts->push(12, "col1", 4);
+        $ts->push(12.1, "col1", 4);
         $ts->push(12.1, "col1", 5);
-        $ts->push(13, "col1", 4);
+        $ts->push(13.1, "col1", 4);
         $ts->close();
         $this->assertEquals("" , $this->outputFormat->data["10"]["col1"]);
         $this->assertEquals(3 , $this->outputFormat->data["11"]["col1"]);
@@ -82,9 +82,9 @@ class TimeSeriesTest extends TestCase
     public function testFillBetween()
     {
         $ts = $this->_createTsWithFillEmpty();
-        $ts->push(10, "col1", 1);
-        $ts->push(12, "col1", 4);
-        $ts->push(13, "col1", 4);
+        $ts->push(10.1, "col1", 1);
+        $ts->push(12.1, "col1", 4);
+        $ts->push(13.1, "col1", 4);
         $ts->close();
         $this->assertEquals(1 , $this->outputFormat->data["10"]["col1"]);
         $this->assertEquals("" , $this->outputFormat->data["11"]["col1"]);
@@ -100,8 +100,8 @@ class TimeSeriesTest extends TestCase
     public function testException()
     {
         $ts = $this->_createTsWithFillEmpty();
-        $ts->push(12, "col1", 4);
-        $ts->push(10, "col1", 1);
-        $ts->push(13, "col1", 4);
+        $ts->push(12.1, "col1", 4);
+        $ts->push(10.1, "col1", 1);
+        $ts->push(13.1, "col1", 4);
     }
 }

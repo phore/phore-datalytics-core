@@ -126,13 +126,13 @@ class TimeSeries
 
         $this->signals[$signalName]->addValue($value);
         $this->signalBufferLen++;
-        $this->lastPushTs = $timestamp;
+        $this->lastPushTs = $this->_getFlatTs($timestamp); //ist das so richtig ? oder doch mit $this->_getFlatTs()
 
     }
 
     public function close()
     {
-        $this->_flush($this->lastPushTs);
+        $this->_flush($this->lastFlushTs); //$this->lastPushTs
 
         if ($this->fillEmpty) {
             $this->_checkMustFill($this->endTs + $this->sampleInterval);
