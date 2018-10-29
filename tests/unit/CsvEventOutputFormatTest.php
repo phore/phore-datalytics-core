@@ -18,6 +18,9 @@ class CsvEventOutputFormatTest extends TestCase
     {
         $tmp = phore_file("/tmp/testCsvEventOutput.csv")->fopen("w+");
         $csvEventOutputFormat = new CsvEventOutputFormat($tmp);
+        $csvEventOutputFormat->mapName("sig1");
+        $csvEventOutputFormat->mapName("sig2");
+        $csvEventOutputFormat->mapName("sig3");
         Assert::assertEquals(true, $csvEventOutputFormat->sendData("1234",["sig1"=>2, "sig2"=>3, "sig3" =>4]));
         Assert::assertEquals(true, $csvEventOutputFormat->sendData("1234",["sig1"=>5, "sig2"=>6, "sig3" =>7]));
         $testFile = phore_file("/tmp/testCsvEventOutput.csv")->fopen("r");

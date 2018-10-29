@@ -26,4 +26,9 @@ class ArrayOutputFormat implements OutputFormat
     {
         // TODO: Implement close() method.
     }
+
+    public function mapName(string $name, string $alias = null)
+    {
+        // TODO: Implement mapName() method.
+    }
 }
