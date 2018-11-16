@@ -139,4 +139,11 @@ class TimeSeriesTest extends TestCase
         $ts->close();
         $this->assertArrayHasKey(10, $this->outputFormat->data);
     }
+
+    public function testHeader()
+    {
+        $ts = $this->_createTsWithFillEmpty();
+        $ts->close();
+        $this->assertTrue($this->outputFormat->isClosed);
+    }
 }

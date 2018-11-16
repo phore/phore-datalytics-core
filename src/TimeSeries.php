@@ -9,7 +9,6 @@
 namespace Phore\Datalytics\Core;
 
 
-use http\Exception\InvalidArgumentException;
 use Phore\Datalytics\Core\Aggregator\Aggregator;
 use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 
@@ -45,6 +44,7 @@ class TimeSeries
         $this->endTs = $endTs;
         if ($fillEmpty) {
             $this->lastFlushTs = $this->_getFlatTs($startTs) - $sampleInterval;
+            $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
         }
     }
 
@@ -140,6 +140,7 @@ class TimeSeries
         if ($this->fillEmpty) {
             $this->_checkMustFill($this->endTs);
         }
+        $this->outputFormat->close();
     }
 
 

@@ -15,7 +15,7 @@ class ArrayOutputFormat implements OutputFormat
 {
 
     public $data = [];
-
+    public $isClosed = false;
     
     public function sendData(float $ts, array $data)
     {
@@ -24,7 +24,7 @@ class ArrayOutputFormat implements OutputFormat
 
     public function close()
     {
-        // TODO: Implement close() method.
+        $this->isClosed = true;
     }
 
     public function mapName(string $name, string $alias = null)

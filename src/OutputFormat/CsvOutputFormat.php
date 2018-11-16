@@ -35,6 +35,7 @@ class CsvOutputFormat implements OutputFormat
         foreach ($this->header as $signalName => $alias) {
             $arr[] = $alias;
         }
+
         $this->outputHeandler->fputcsv($arr,$this->delimiter);
         $this->headerSend = true;
     }
