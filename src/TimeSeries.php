@@ -42,9 +42,10 @@ class TimeSeries
         $this->sampleInterval = $sampleInterval;
         $this->startTs = $startTs;
         $this->endTs = $endTs;
+        $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
         if ($fillEmpty) {
             $this->lastFlushTs = $this->_getFlatTs($startTs) - $sampleInterval;
-            $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
+
         }
     }
 
