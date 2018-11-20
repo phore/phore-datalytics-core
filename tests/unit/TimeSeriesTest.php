@@ -11,6 +11,7 @@ namespace Test;
 
 use Phore\Datalytics\Core\Aggregator\SumAggregator;
 use Phore\Datalytics\Core\OutputFormat\ArrayOutputFormat;
+use Phore\Datalytics\Core\OutputFormat\OutputFormatFactory;
 use Phore\Datalytics\Core\TimeSeries;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -146,4 +147,5 @@ class TimeSeriesTest extends TestCase
         $ts->close();
         $this->assertTrue($this->outputFormat->isClosed);
     }
+
 }
