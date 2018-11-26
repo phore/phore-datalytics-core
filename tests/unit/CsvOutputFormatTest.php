@@ -32,23 +32,22 @@ class CsvOutputFormatTest extends TestCase
         $testFile->fclose();
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Data missing for SignalName: 'test'
-     */
+
     public function testException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Data missing for SignalName: 'test'");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
         $csvOutputFormat->mapName("test", "erster");
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));
     }
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage No SignalNames set
-     */
+
+
     public function testNoSignalNameException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("No SignalNames set");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));

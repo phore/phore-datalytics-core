@@ -11,7 +11,7 @@ namespace Test;
 
 use PHPUnit\Framework\TestCase;
 
-class DataMergeTest extends TestCase
+class dont extends TestCase
 {
 
 

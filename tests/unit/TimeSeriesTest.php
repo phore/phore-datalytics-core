@@ -102,12 +102,11 @@ class TimeSeriesTest extends TestCase
     }
 
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Timestamp not in cronological order
-     */
+
     public function testException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Timestamp not in chronological order");
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(12.1, "col1", 4);
         $ts->push(10.1, "col1", 1);

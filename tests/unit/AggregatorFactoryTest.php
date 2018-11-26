@@ -23,13 +23,13 @@ class AggregatorFactoryTest extends TestCase
     public function testGetAggregator()
     {
         $aggregatorFactory = new AggregatorFactory();
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator("avg"));
-        Assert::assertEquals(new CountAggregator(), $aggregatorFactory->createAggregator("count"));
-        Assert::assertEquals(new FirstAggregator(), $aggregatorFactory->createAggregator("first"));
-        Assert::assertEquals(new MaxAggregator(), $aggregatorFactory->createAggregator("max"));
-        Assert::assertEquals(new MinAggregator(), $aggregatorFactory->createAggregator("min"));
-        Assert::assertEquals(new SumAggregator(), $aggregatorFactory->createAggregator("sum"));
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator());
-        Assert::assertEquals(new AvgAggregator(), $aggregatorFactory->createAggregator("abc"));
+        Assert::isInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("avg"));
+        Assert::isInstanceOf(CountAggregator::class,    $aggregatorFactory->createAggregator("count"));
+        Assert::isInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator("first"));
+        Assert::isInstanceOf(MaxAggregator::class,      $aggregatorFactory->createAggregator("max"));
+        Assert::isInstanceOf(MinAggregator::class,      $aggregatorFactory->createAggregator("min"));
+        Assert::isInstanceOf(SumAggregator::class,      $aggregatorFactory->createAggregator("sum"));
+        Assert::isInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator());
+        Assert::isInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("abc"));
     }
 }

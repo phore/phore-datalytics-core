@@ -27,7 +27,7 @@ class AggregatorFactory
             case "sum":
                 return new SumAggregator();
             default:
-                return new AvgAggregator();
+                return new FirstAggregator();
 
         }
     }
