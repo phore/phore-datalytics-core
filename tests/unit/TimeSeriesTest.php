@@ -9,6 +9,7 @@
 namespace Test;
 
 
+use Phore\Datalytics\Core\Aggregator\FirstAggregator;
 use Phore\Datalytics\Core\Aggregator\SumAggregator;
 use Phore\Datalytics\Core\OutputFormat\ArrayOutputFormat;
 use Phore\Datalytics\Core\OutputFormat\OutputFormatFactory;
@@ -101,8 +102,6 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(4 , $this->outputFormat->data["13"]["col1"]);
     }
 
-
-
     public function testException()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -140,7 +139,20 @@ class TimeSeriesTest extends TestCase
         $this->assertArrayHasKey(10, $this->outputFormat->data);
     }
 
-    public function testHeader()
+    public function testSampleIntervalZeroWillOutputUnsampledData()
+    {
+        $ts = new TimeSeries(10, 11, false, 0);
+        $ts->define("a", new FirstAggregator());
+        $ts->setOutputFormat($aof = new ArrayOutputFormat());
+        $ts->push(10.0, "a", 1);
+        $ts->push(10.1, "a", 1);
+        $ts->close();
+
+        $this->assertEquals(2, count ($aof->data));
+        $this->assertEquals([10, 10.1], array_keys($aof->data));
+    }
+
+    public function testHeaderIsSentWithNoData()
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->close();

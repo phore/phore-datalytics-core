@@ -38,15 +38,20 @@ class TimeSeries
 
     public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1)
     {
+        if ($sampleInterval < 0.0001) {
+            $this->sampleInterval = false;
+            $this->lastPushTs = $this->_getFlatTs($startTs) - 1;
+
+            if ($fillEmpty)
+                throw new \InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
+        } else {
+            $this->sampleInterval = $sampleInterval;
+            $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
+        }
         $this->fillEmpty = $fillEmpty;
-        $this->sampleInterval = $sampleInterval;
+        $this->lastFlushTs = $this->lastPushTs;
         $this->startTs = $startTs;
         $this->endTs = $endTs;
-        $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
-        if ($fillEmpty) {
-            $this->lastFlushTs = $this->_getFlatTs($startTs) - $sampleInterval;
-
-        }
     }
 
 
@@ -64,6 +69,8 @@ class TimeSeries
 
     private function _getFlatTs (float $ts)
     {
+        if ($this->sampleInterval === false)
+            return $ts;
         return ((int)($ts / $this->sampleInterval)) * $this->sampleInterval;
     }
 
@@ -84,8 +91,6 @@ class TimeSeries
 
     private function _fill(float $ts)
     {
-        if($this->fillEmpty === false)
-            return;
         $data = [];
         foreach (array_keys($this->signals) as $name) {
             // Don't reset aggregator
@@ -96,6 +101,8 @@ class TimeSeries
 
     private function _checkMustFill (float $nextTs)
     {
+        if($this->fillEmpty === false)
+            return;
         $fillTs = $this->lastFlushTs + $this->sampleInterval;
 
         while ($fillTs < $nextTs) {
@@ -114,10 +121,6 @@ class TimeSeries
 
         if($flatTs < $this->lastFlushTs)
             throw new \InvalidArgumentException("Timestamp not in chronological order");
-
-        if($this->lastFlushTs === null) {
-            $this->lastFlushTs = $flatTs;
-        }
 
         if($this->lastFlushTs < $flatTs) {
             $this->_flush($this->lastFlushTs);
