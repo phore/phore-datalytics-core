@@ -9,6 +9,8 @@
 namespace Phore\Datalytics\Core\OutputFormat;
 
 
+use Phore\FileSystem\FileStream;
+
 class OutputFormatFactory
 {
     public function createOutputFormat(string $formatName = "csv", FileStream $res = null, string $delimiter = "\t") : OutputFormat
@@ -18,6 +20,8 @@ class OutputFormatFactory
                 return new CsvOutputFormat($res, $delimiter);
             case "csvevt":
                 return new CsvEventOutputFormat($res, $delimiter);
+            case "json":
+                return new JsonOutputFormat($res, $delimiter);
             default:
                 return new CsvOutputFormat($res, $delimiter);
         }
