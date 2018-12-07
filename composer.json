@@ -9,7 +9,8 @@
   ],
   "require": {
     "php": ">=7.1",
-    "phore/filesystem": "*"
+    "phore/filesystem": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

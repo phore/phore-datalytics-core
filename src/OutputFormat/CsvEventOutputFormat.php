@@ -15,7 +15,7 @@ class CsvEventOutputFormat implements OutputFormat
 {
 
     private $outputHeandler;
-    private$delimiter;
+    private $delimiter;
     private $header = [];
 
     public function __construct(FileStream $res = null, string $delimiter = "\t")

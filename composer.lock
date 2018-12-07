@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "74dd7915d11eda2805798c0a81e7a11d",
+    "content-hash": "5d2947ab9a7d0ba4d0fb219f1d19f5dc",
     "packages": [
         {
             "name": "phore/filesystem",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-filesystem.git",
-                "reference": "2cc2db03986ed98b8216f33de13125ffb0d5136b"
+                "reference": "62a2bdb0e9223735667eed0804cb2a83ae17c7b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-filesystem/zipball/2cc2db03986ed98b8216f33de13125ffb0d5136b",
-                "reference": "2cc2db03986ed98b8216f33de13125ffb0d5136b",
+                "url": "https://api.github.com/repos/phore/phore-filesystem/zipball/62a2bdb0e9223735667eed0804cb2a83ae17c7b5",
+                "reference": "62a2bdb0e9223735667eed0804cb2a83ae17c7b5",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                     "email": "leuffen@continue.de"
                 }
             ],
-            "time": "2018-10-16T12:39:37+00:00"
+            "time": "2018-11-30T10:37:35+00:00"
         },
         {
             "name": "psr/http-message",
@@ -780,12 +780,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8e38288eaa9df8c380af320a4d78bb9078a127cc"
+                "reference": "9ca4945597fd89dcf42c89578fc98aff4e07824c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8e38288eaa9df8c380af320a4d78bb9078a127cc",
-                "reference": "8e38288eaa9df8c380af320a4d78bb9078a127cc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9ca4945597fd89dcf42c89578fc98aff4e07824c",
+                "reference": "9ca4945597fd89dcf42c89578fc98aff4e07824c",
                 "shasum": ""
             },
             "require": {
@@ -853,7 +853,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-11-27T06:59:14+00:00"
+            "time": "2018-12-07T07:12:40+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -906,12 +906,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "71bdaddd52ddb753a144c78289f21abb719aebc4"
+                "reference": "33825cd25f073faafe98c4a017a5d2b69f3e09d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/71bdaddd52ddb753a144c78289f21abb719aebc4",
-                "reference": "71bdaddd52ddb753a144c78289f21abb719aebc4",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/33825cd25f073faafe98c4a017a5d2b69f3e09d3",
+                "reference": "33825cd25f073faafe98c4a017a5d2b69f3e09d3",
                 "shasum": ""
             },
             "require": {
@@ -962,7 +962,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2018-10-30T05:42:23+00:00"
+            "time": "2018-12-04T14:31:16+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -1518,7 +1518,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
