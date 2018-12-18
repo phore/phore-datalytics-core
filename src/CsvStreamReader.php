@@ -33,7 +33,7 @@ class CsvStreamReader
         $data = [];
         $inData = explode("\t", $string);
         for($i=0; $i<count($inData); $i++) {
-            $data[$this->columns[$i] = $inData[$i]];
+            $data[$this->columns[$i]] = $inData[$i];
         }
         ($this->dataCallback)($data);
         return true;
