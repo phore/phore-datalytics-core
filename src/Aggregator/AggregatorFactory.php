@@ -11,7 +11,7 @@ namespace Phore\Datalytics\Core\Aggregator;
 
 class AggregatorFactory
 {
-    public function createAggregator(string $aggregatorName = "avg") : Aggregator
+    public function createAggregator(string $aggregatorName = "first") : Aggregator
     {
         switch ($aggregatorName) {
             case "avg":
@@ -27,7 +27,7 @@ class AggregatorFactory
             case "sum":
                 return new SumAggregator();
             default:
-                return new FirstAggregator();
+                throw new \InvalidArgumentException("Unknown aggregator name: $aggregatorName");
 
         }
     }
