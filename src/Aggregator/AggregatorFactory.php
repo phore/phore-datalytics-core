@@ -11,8 +11,20 @@ namespace Phore\Datalytics\Core\Aggregator;
 
 class AggregatorFactory
 {
-    public function createAggregator(string $aggregatorName = "first") : Aggregator
+    
+    private $defaultAggregator;
+    
+    public function __construct(string $defaultAggregator="first")
     {
+        $this->defaultAggregator = $defaultAggregator;
+    }
+
+
+    public function createAggregator(string $aggregatorName = null) : Aggregator
+    {
+        if ($aggregatorName === null)
+            $aggregatorName = $this->defaultAggregator;
+        
         switch ($aggregatorName) {
             case "avg":
                 return new AvgAggregator();
