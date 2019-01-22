@@ -17,13 +17,23 @@ class CsvEventOutputFormat implements OutputFormat
     private $outputHeandler;
     private $delimiter;
     private $header = [];
+    private $eof = "false";
 
-    public function __construct(FileStream $res = null, string $delimiter = "\t")
+    public function __construct(FileStream $res = null, string $delimiter = "\t", string $eof = "false")
     {
         if ($res === null)
             $res = phore_file("php://output")->fopen("w");
         $this->outputHeandler = $res;
         $this->delimiter = $delimiter;
+        $this->eof = $eof;
+    }
+
+    private function _ensureFooterSend()
+    {
+        if($this->eof !== "true"){
+            return;
+        }
+        $this->outputHeandler->fputcsv(array(0 => "eof", 1 => "eof", 2 => "eof"), $this->delimiter);
     }
 
     public function mapName(string $signalName, string $headerAlias = null)
@@ -46,6 +56,7 @@ class CsvEventOutputFormat implements OutputFormat
 
     public function close()
     {
+        $this->_ensureFooterSend();
         $this->outputHeandler->fclose();
     }
 }

@@ -57,7 +57,7 @@ class TimeSeriesTest extends TestCase
         $this->assertEmpty($this->outputFormat->data);
         $ts->push(11.1, "col1", 4);
         $this->assertArrayHasKey("10", $this->outputFormat->data);
-        $ts->close();
+        $ts->close("false");
         $this->assertArrayHasKey("11", $this->outputFormat->data);
     }
 
@@ -67,7 +67,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(10, "col1", 1);
         $ts->push(10.5, "col1", 2);
         $ts->push(11, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertEquals(3 , $this->outputFormat->data["10"]["col1"]);
         $this->assertEquals(4 , $this->outputFormat->data["11"]["col1"]);
         $this->assertEquals("" , $this->outputFormat->data["12"]["col1"]);
@@ -82,7 +82,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(12.1, "col1", 4);
         $ts->push(12.1, "col1", 5);
         $ts->push(13.1, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertEquals("" , $this->outputFormat->data["10"]["col1"]);
         $this->assertEquals(3 , $this->outputFormat->data["11"]["col1"]);
         $this->assertEquals(9 , $this->outputFormat->data["12"]["col1"]);
@@ -95,7 +95,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.1, "col1", 1);
         $ts->push(12.1, "col1", 4);
         $ts->push(13.1, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertEquals(1 , $this->outputFormat->data["10"]["col1"]);
         $this->assertEquals("" , $this->outputFormat->data["11"]["col1"]);
         $this->assertEquals(4 , $this->outputFormat->data["12"]["col1"]);
@@ -117,7 +117,7 @@ class TimeSeriesTest extends TestCase
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
         $ts->push(11.1, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertArrayNotHasKey(11, $this->outputFormat->data);
     }
 
@@ -127,7 +127,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.1, "col1", 4);
         $ts->push(11.1, "col1", 4);
         $ts->push(14.1, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertArrayNotHasKey(14, $this->outputFormat->data);
     }
 
@@ -135,7 +135,7 @@ class TimeSeriesTest extends TestCase
     {
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
-        $ts->close();
+        $ts->close("false");
         $this->assertArrayHasKey(10, $this->outputFormat->data);
     }
 
@@ -146,7 +146,7 @@ class TimeSeriesTest extends TestCase
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
         $ts->push(10.0, "a", 1);
         $ts->push(10.1, "a", 1);
-        $ts->close();
+        $ts->close("false");
 
         $this->assertEquals(2, count ($aof->data));
         $this->assertEquals([10, 10.1], array_keys($aof->data));
@@ -155,7 +155,7 @@ class TimeSeriesTest extends TestCase
     public function testHeaderIsSentWithNoData()
     {
         $ts = $this->_createTsWithFillEmpty();
-        $ts->close();
+        $ts->close("false");
         $this->assertTrue($this->outputFormat->isClosed);
     }
 
