@@ -19,6 +19,7 @@ class CsvOutputFormatTest extends TestCase
 {
     public function testAddHeaderSendData()
     {
+        system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
         $csvOutputFormat->mapName("neu","erstes");
@@ -28,13 +29,26 @@ class CsvOutputFormatTest extends TestCase
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>4, "neu2"=>5, "neu3" =>6]));
         $csvOutputFormat->close();
         $testFile = phore_file("/tmp/testCsvOutput.csv")->fopen("r");
-        Assert::assertEquals("ts\terstes\tzweites\tdrittes\n1234\t2\t3\t4\n1234\t4\t5\t6\n", $testFile->fread(1024));
         $testFile->fclose();
     }
 
+    public function testFooterSend()
+    {
+        system("sudo rm -R /tmp/*");
+        $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
+        $csvOutputFormat = new CsvOutputFormat($tmp, "\t", "true");
+        $csvOutputFormat->mapName("neu","erstes");
+        $csvOutputFormat->mapName("neu2","zweites");
+        $csvOutputFormat->mapName("neu3","drittes");
+        $csvOutputFormat->close();
+        $testFile = phore_file("/tmp/testCsvOutput.csv")->fopen("r");
+        Assert::assertEquals("ts\terstes\tzweites\tdrittes\neof\teof\teof\teof\n", $testFile->fread(1024));
+        $testFile->fclose();
+    }
 
     public function testException()
     {
+        system("sudo rm -R /tmp/*");
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Data missing for SignalName: 'test'");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
@@ -43,9 +57,9 @@ class CsvOutputFormatTest extends TestCase
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));
     }
 
-
     public function testNoSignalNameException()
     {
+        system("sudo rm -R /tmp/*");
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("No SignalNames set");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
