@@ -22,6 +22,9 @@ class OutputFormatFactory
                 return new CsvEventOutputFormat($res, $delimiter);
             case "json":
                 return new JsonOutputFormat($res, $delimiter);
+            case "tbf":
+                return new TbfOutputFormat($res);
+                
             default:
                 return new CsvOutputFormat($res, $delimiter);
         }
