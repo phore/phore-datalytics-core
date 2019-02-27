@@ -30,6 +30,14 @@ class AggregatorFactoryTest extends TestCase
         Assert::isInstanceOf(MinAggregator::class,      $aggregatorFactory->createAggregator("min"));
         Assert::isInstanceOf(SumAggregator::class,      $aggregatorFactory->createAggregator("sum"));
         Assert::isInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator());
+    }
+
+    public function testAggregatorUnknownException()
+    {
+        $aggregatorFactory = new AggregatorFactory();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Unknown aggregator name: abc");
         Assert::isInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("abc"));
     }
+
 }
