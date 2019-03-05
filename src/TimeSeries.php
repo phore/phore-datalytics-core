@@ -46,7 +46,7 @@ class TimeSeries
                 throw new \InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
         } else {
             $this->sampleInterval = $sampleInterval;
-            $this->lastPushTs = $this->_getFlatTs($startTs) - $sampleInterval;
+            $this->lastPushTs = $this->_getFlatTs($startTs) - 1;
         }
         $this->fillEmpty = $fillEmpty;
         $this->lastFlushTs = $this->lastPushTs;
@@ -106,7 +106,8 @@ class TimeSeries
         $fillTs = $this->lastFlushTs + $this->sampleInterval;
 
         while ($fillTs < $nextTs) {
-            $this->_fill($fillTs);
+            if ($fillTs >= $this->startTs && $fillTs < $this->endTs)
+                $this->_fill($fillTs);
             $this->lastFlushTs = $fillTs;
             $fillTs += $this->sampleInterval;
         }
@@ -116,7 +117,7 @@ class TimeSeries
     {
         $flatTs = $this->_getFlatTs($timestamp);
 
-        if(!($this->startTs <= $flatTs && $this->endTs > $flatTs))
+        if($flatTs < $this->startTs || $flatTs >= $this->endTs)
             return;
 
         if($flatTs < $this->lastFlushTs)
