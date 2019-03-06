@@ -194,7 +194,4 @@ class TimeSeriesTest extends TestCase
         echo count($of->data);
     }
 
-
-
-
 }
