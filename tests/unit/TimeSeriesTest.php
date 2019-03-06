@@ -66,6 +66,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(11.1, "col1", 4);
 
         $this->assertEquals(1, count($this->outputFormat->data));
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
         $ts->close();
 
         $this->assertEquals(2, count($this->outputFormat->data));
@@ -98,6 +99,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(13.1, "col1", 4);
         $ts->close();
 
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
         $this->assertEquals("" , $this->outputFormat->data[0]["col1"]);
         $this->assertEquals(3 , $this->outputFormat->data[1]["col1"]);
         $this->assertEquals(9 , $this->outputFormat->data[2]["col1"]);
@@ -174,6 +176,9 @@ class TimeSeriesTest extends TestCase
         $ts = $this->_createTsWithFillEmpty();
         $ts->close();
         $this->assertTrue($this->outputFormat->isClosed);
+
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
+        $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
     }
 
 

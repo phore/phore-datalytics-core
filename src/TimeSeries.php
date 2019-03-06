@@ -148,9 +148,9 @@ class TimeSeries
             $this->_shiftOne();
         }
         while ($this->curFrameEnd < $this->endTs && $this->fillEmpty) {
-            $this->_shiftOne();
             if ($this->fillEmpty)
                 $this->_fillNull();
+            $this->_shiftOne();
         }
 
         $this->outputFormat->close();
