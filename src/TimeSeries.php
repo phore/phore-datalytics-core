@@ -21,37 +21,39 @@ class TimeSeries
      */
     private $signals = [];
 
-    private $signalBufferLen = 0;
 
     /**
      * @var OutputFormat
      */
     private $outputFormat;
 
-    private $lastFlushTs = null;
-    private $lastPushTs = null;
+
 
     private $sampleInterval;
     private $fillEmpty;
     private $startTs;
     private $endTs;
 
+    private $curFrameStart;
+    private $curFrameEnd;
+    private $curFrameDataCount = 0;
+
     public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1)
     {
         if ($sampleInterval < 0.0001) {
             $this->sampleInterval = false;
-            $this->lastPushTs = $this->_getFlatTs($startTs) - 1;
 
             if ($fillEmpty)
                 throw new \InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
         } else {
             $this->sampleInterval = $sampleInterval;
-            $this->lastPushTs = $this->_getFlatTs($startTs) - 1;
         }
         $this->fillEmpty = $fillEmpty;
-        $this->lastFlushTs = $this->lastPushTs;
         $this->startTs = $startTs;
         $this->endTs = $endTs;
+
+        $this->curFrameStart = $startTs;
+        $this->curFrameEnd = $startTs + $sampleInterval - 0.00001;
     }
 
 
@@ -67,84 +69,90 @@ class TimeSeries
         return $this;
     }
 
-    private function _getFlatTs (float $ts)
-    {
-        if ($this->sampleInterval === false)
-            return $ts;
-        return ((int)($ts / $this->sampleInterval)) * $this->sampleInterval;
-    }
 
-    private function _flush(float $ts)
+    protected function _flush()
     {
-        if ($this->signalBufferLen === 0)
-            return;
-
         $data = [];
         foreach ($this->signals as $name => $aggregator) {
             $data[$name] = $aggregator->getAggregated();
             $aggregator->reset();
         }
 
-        $this->outputFormat->sendData($ts, $data);
-        $this->signalBufferLen = 0;
+        $this->outputFormat->sendData($this->curFrameStart, $data);
+        $this->curFrameDataCount = 0;
     }
 
-    private function _fill(float $ts)
+
+    protected function _fillNull()
     {
-        $data = [];
-        foreach (array_keys($this->signals) as $name) {
-            // Don't reset aggregator
-            $data[$name] = null;
+        $emptySet = [];
+
+        foreach ($this->signals as $name => $aggregator) {
+            $emptySet[$name] = null;
         }
-        $this->outputFormat->sendData($ts, $data);
+        $this->outputFormat->sendData($this->curFrameStart, $emptySet);
+
     }
 
-    private function _checkMustFill (float $nextTs)
+    protected function _shiftOne()
     {
-        if($this->fillEmpty === false)
-            return;
-        $fillTs = $this->lastFlushTs + $this->sampleInterval;
-
-        while ($fillTs < $nextTs) {
-            if ($fillTs >= $this->startTs && $fillTs < $this->endTs)
-                $this->_fill($fillTs);
-            $this->lastFlushTs = $fillTs;
-            $fillTs += $this->sampleInterval;
+        if ($this->sampleInterval === false) {
+            return; // No filling
         }
+        $this->curFrameStart += $this->sampleInterval;
+        $this->curFrameEnd = $this->curFrameStart + $this->sampleInterval - 0.00001;
     }
+
+
 
     public function push(float $timestamp, string $signalName, $value)
     {
-        $flatTs = $this->_getFlatTs($timestamp);
 
-        if($flatTs < $this->startTs || $flatTs >= $this->endTs)
+        if ($timestamp < $this->startTs || $timestamp > $this->endTs) {
             return;
+        }
 
-        if($flatTs < $this->lastFlushTs)
-            throw new \InvalidArgumentException("Timestamp not in chronological order");
-
-        if($this->lastFlushTs < $flatTs) {
-            $this->_flush($this->lastFlushTs);
-            $this->_checkMustFill($flatTs);
-            $this->lastFlushTs = $flatTs;
+        if ($this->sampleInterval === false) {
+            // Unsampled data
+            $this->outputFormat->sendData($timestamp, [$signalName => $value]);
+            return;
         }
 
         if ( ! isset ($this->signals[$signalName]))
-            return;
+            throw new \Exception("Signal '$signalName' not defined");
 
+        if ($timestamp < $this->curFrameStart)
+            throw new \InvalidArgumentException("Timestamp not in chronological order");
+
+        if ($timestamp >= $this->curFrameEnd && $this->curFrameDataCount > 0) {
+            $this->_flush();
+            $this->_shiftOne();
+        }
+
+        while ($this->curFrameEnd < $timestamp) {
+            if ($this->fillEmpty)
+                $this->_fillNull();
+            $this->_shiftOne();
+        }
         $this->signals[$signalName]->addValue($value);
-        $this->signalBufferLen++;
-        $this->lastPushTs = $this->_getFlatTs($timestamp);
+        $this->curFrameDataCount++;
+
 
     }
 
     public function close()
     {
-        $this->_flush($this->lastPushTs);
 
-        if ($this->fillEmpty) {
-            $this->_checkMustFill($this->endTs);
+        if ($this->curFrameDataCount > 0) {
+            $this->_flush();
+            $this->_shiftOne();
         }
+        while ($this->curFrameEnd < $this->endTs && $this->fillEmpty) {
+            $this->_shiftOne();
+            if ($this->fillEmpty)
+                $this->_fillNull();
+        }
+
         $this->outputFormat->close();
     }
 
