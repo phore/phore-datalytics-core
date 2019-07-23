@@ -147,6 +147,4 @@ class TimeSeries
         $this->outputFormat->close();
     }
 
-
-
 }
