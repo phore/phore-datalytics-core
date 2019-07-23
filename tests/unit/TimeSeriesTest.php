@@ -24,7 +24,15 @@ class TimeSeriesTest extends TestCase
      * @var ArrayOutputFormat
      */
     public $outputFormat;
-
+    protected function setUp():void
+    {
+        /**
+         * This disables the exception handling to display the stacktrace on the console
+         * the same way as it shown on the browser
+         */
+        parent::setUp();
+        $this->setUseErrorHandler(false);
+    }
     protected function _createTsWithFillEmpty() : TimeSeries
     {
         $ts = new TimeSeries(10,14, true);
@@ -56,10 +64,14 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.5, "col1", 2);
         $this->assertEmpty($this->outputFormat->data);
         $ts->push(11.1, "col1", 4);
-        $this->assertArrayHasKey("10", $this->outputFormat->data);
-        $ts->close("false");
-        $this->assertArrayHasKey("11", $this->outputFormat->data);
+
+        $this->assertEquals(1, count($this->outputFormat->data));
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
+        $ts->close();
+
+        $this->assertEquals(2, count($this->outputFormat->data));
     }
+
 
     public function testFillAfter()
     {
@@ -67,12 +79,15 @@ class TimeSeriesTest extends TestCase
         $ts->push(10, "col1", 1);
         $ts->push(10.5, "col1", 2);
         $ts->push(11, "col1", 4);
-        $ts->close("false");
-        $this->assertEquals(3 , $this->outputFormat->data["10"]["col1"]);
-        $this->assertEquals(4 , $this->outputFormat->data["11"]["col1"]);
-        $this->assertEquals("" , $this->outputFormat->data["12"]["col1"]);
-        $this->assertEquals("" , $this->outputFormat->data["13"]["col1"]);
+        $ts->close();
+        print_r ($this->outputFormat->data);
+
+        $this->assertEquals(3 , $this->outputFormat->data[0]["col1"]);
+        $this->assertEquals(4 , $this->outputFormat->data[1]["col1"]);
+        $this->assertEquals("" , $this->outputFormat->data[2]["col1"]);
+        $this->assertEquals("" , $this->outputFormat->data[3]["col1"]);
     }
+
 
     public function testFillBefore()
     {
@@ -82,11 +97,13 @@ class TimeSeriesTest extends TestCase
         $ts->push(12.1, "col1", 4);
         $ts->push(12.1, "col1", 5);
         $ts->push(13.1, "col1", 4);
-        $ts->close("false");
-        $this->assertEquals("" , $this->outputFormat->data["10"]["col1"]);
-        $this->assertEquals(3 , $this->outputFormat->data["11"]["col1"]);
-        $this->assertEquals(9 , $this->outputFormat->data["12"]["col1"]);
-        $this->assertEquals(4 , $this->outputFormat->data["13"]["col1"]);
+        $ts->close();
+
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
+        $this->assertEquals("" , $this->outputFormat->data[0]["col1"]);
+        $this->assertEquals(3 , $this->outputFormat->data[1]["col1"]);
+        $this->assertEquals(9 , $this->outputFormat->data[2]["col1"]);
+        $this->assertEquals(4 , $this->outputFormat->data[3]["col1"]);
     }
 
     public function testFillBetween()
@@ -95,11 +112,12 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.1, "col1", 1);
         $ts->push(12.1, "col1", 4);
         $ts->push(13.1, "col1", 4);
-        $ts->close("false");
-        $this->assertEquals(1 , $this->outputFormat->data["10"]["col1"]);
-        $this->assertEquals("" , $this->outputFormat->data["11"]["col1"]);
-        $this->assertEquals(4 , $this->outputFormat->data["12"]["col1"]);
-        $this->assertEquals(4 , $this->outputFormat->data["13"]["col1"]);
+        $ts->close();
+        print_r ($this->outputFormat->data);
+        $this->assertEquals(1 , $this->outputFormat->data[0]["col1"]);
+        $this->assertEquals("" , $this->outputFormat->data[1]["col1"]);
+        $this->assertEquals(4 , $this->outputFormat->data[2]["col1"]);
+        $this->assertEquals(4 , $this->outputFormat->data[3]["col1"]);
     }
 
     public function testException()
@@ -117,8 +135,8 @@ class TimeSeriesTest extends TestCase
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
         $ts->push(11.1, "col1", 4);
-        $ts->close("false");
-        $this->assertArrayNotHasKey(11, $this->outputFormat->data);
+        $ts->close();
+        $this->assertEquals(1, count($this->outputFormat->data));
     }
 
     public function testTsEqualEndTsWithFillEmpty()
@@ -127,7 +145,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.1, "col1", 4);
         $ts->push(11.1, "col1", 4);
         $ts->push(14.1, "col1", 4);
-        $ts->close("false");
+        $ts->close();
         $this->assertArrayNotHasKey(14, $this->outputFormat->data);
     }
 
@@ -135,8 +153,8 @@ class TimeSeriesTest extends TestCase
     {
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
-        $ts->close("false");
-        $this->assertArrayHasKey(10, $this->outputFormat->data);
+        $ts->close();
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
     }
 
     public function testSampleIntervalZeroWillOutputUnsampledData()
@@ -146,17 +164,39 @@ class TimeSeriesTest extends TestCase
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
         $ts->push(10.0, "a", 1);
         $ts->push(10.1, "a", 1);
-        $ts->close("false");
+        $ts->close();
 
         $this->assertEquals(2, count ($aof->data));
-        $this->assertEquals([10, 10.1], array_keys($aof->data));
+        $this->assertEquals(10, $aof->data[0]["ts"]);
+        $this->assertEquals(10.1, $aof->data[1]["ts"]);
     }
 
     public function testHeaderIsSentWithNoData()
     {
         $ts = $this->_createTsWithFillEmpty();
-        $ts->close("false");
+        $ts->close();
         $this->assertTrue($this->outputFormat->isClosed);
+
+        $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
+        $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
+    }
+
+
+
+    public function testTimeSeriesRealIssue()
+    {
+        $ts = new TimeSeries(1542024000, 1542027600, true, 5);
+        $ts->setOutputFormat($of = new ArrayOutputFormat());
+
+        $ts->define("col1", new FirstAggregator());
+
+
+        $ts->push(1542024008, "col1", null);
+        $ts->push(1542025433, "col1", null);
+        $ts->close();
+        print_r ($of->data[0]);
+        print_r ($of->data[count($of->data)-1]);
+        echo count($of->data);
     }
 
 }
