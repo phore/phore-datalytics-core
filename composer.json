@@ -11,8 +11,7 @@
     "php": ">=7.1",
     "phore/filesystem": "*",
     "ext-json": "*",
-    "phore/http-client": "dev-master",
-    "ext-bcmath": "*"
+    "phore/http-client": "dev-master"
   },
   "autoload": {
     "psr-4": {

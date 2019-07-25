@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "da372b1baf70d7fc6502ff9b61b805e6",
+    "content-hash": "f5bbf809d32879e139fcd8ba623526e5",
     "packages": [
         {
             "name": "phore/core",
@@ -1745,8 +1745,7 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.1",
-        "ext-json": "*",
-        "ext-bcmath": "*"
+        "ext-json": "*"
     },
     "platform-dev": []
 }
