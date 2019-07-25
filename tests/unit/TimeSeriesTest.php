@@ -164,11 +164,38 @@ class TimeSeriesTest extends TestCase
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
         $ts->push(10.0, "a", 1);
         $ts->push(10.1, "a", 1);
-        $ts->close();
-
-        $this->assertEquals(2, count ($aof->data));
+        $ts->close();$this->assertEquals(2, count ($aof->data));
         $this->assertEquals(10, $aof->data[0]["ts"]);
         $this->assertEquals(10.1, $aof->data[1]["ts"]);
+    }
+
+    public function testSampleIntervalSmallerOneAndGreaterZero(){
+        $ts = new TimeSeries(10, 11, false, 0.001);
+        $ts->define("a", new FirstAggregator());
+        $ts->setOutputFormat($aof = new ArrayOutputFormat());
+        $ts->push(10.0011, "a", 1);
+        $ts->push(10.002, "a", 1);
+        $ts->push(10.003, "a", 1);
+        $ts->push(10.0499, "a", 1);
+        $ts->close();
+        $this->assertEquals(4, count ($aof->data));
+        $this->assertEquals(10.001, $aof->data[0]["ts"]);
+        $this->assertEquals(10.002, $aof->data[1]["ts"]);
+        $this->assertEquals(10.003, $aof->data[2]["ts"]);
+        $this->assertEquals(10.049, $aof->data[3]["ts"]);
+    }
+
+    public function testShiftOne(){
+        $ts = new TimeSeries(1560384010, 1560384012, false, 0.001);
+        $ts->define("a", new FirstAggregator());
+        $ts->setOutputFormat($aof = new ArrayOutputFormat());
+        $ts->push(1560384010.924, "a", 1);
+        $ts->push(1560384011.0242, "a", 1);
+        $ts->push(1560384011.0242, "a", 1);
+        $ts->close();
+        $this->assertEquals(2, count ($aof->data));
+        $this->assertEquals(1560384010.924, $aof->data[0]["ts"]);
+        $this->assertEquals(1560384011.024, $aof->data[1]["ts"]);
     }
 
     public function testHeaderIsSentWithNoData()
@@ -180,8 +207,6 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
         $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
     }
-
-
 
     public function testTimeSeriesRealIssue()
     {

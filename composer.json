@@ -10,7 +10,9 @@
   "require": {
     "php": ">=7.1",
     "phore/filesystem": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "phore/http-client": "dev-master",
+    "ext-bcmath": "*"
   },
   "autoload": {
     "psr-4": {

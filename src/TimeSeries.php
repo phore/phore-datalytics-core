@@ -16,6 +16,8 @@ use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 class TimeSeries
 {
 
+    const a = 100000;
+
     /**
      * @var Aggregator[]
      */
@@ -26,7 +28,6 @@ class TimeSeries
      * @var OutputFormat
      */
     private $outputFormat;
-
 
 
     private $sampleInterval;
@@ -42,34 +43,27 @@ class TimeSeries
     {
         if ($sampleInterval < 0.0001) {
             $this->sampleInterval = false;
-
             if ($fillEmpty)
                 throw new \InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
         } else {
-            $this->sampleInterval = $sampleInterval;
+            $this->sampleInterval = (int) ($sampleInterval * self::a);
         }
         $this->fillEmpty = $fillEmpty;
-        $this->startTs = $startTs;
-        $this->endTs = $endTs;
-
-        $this->curFrameStart = $startTs;
-        $this->curFrameEnd = $startTs + $sampleInterval - 0.00001;
+        $this->startTs = (int) ($startTs * self::a);
+        $this->endTs = (int) ($endTs * self::a);
+        $this->curFrameStart = (int) ($this->startTs);
+        $this->curFrameEnd = (int) ($this->startTs + $this->sampleInterval - 1);
     }
-
-
     public function setOutputFormat(OutputFormat $outputFormat) : self
     {
         $this->outputFormat = $outputFormat;
         return $this;
     }
-
     public function define($name, Aggregator $aggregator) : self
     {
         $this->signals[$name] = $aggregator;
         return $this;
     }
-
-
     protected function _flush()
     {
         $data = [];
@@ -77,36 +71,28 @@ class TimeSeries
             $data[$name] = $aggregator->getAggregated();
             $aggregator->reset();
         }
-
-        $this->outputFormat->sendData($this->curFrameStart, $data);
+        $this->outputFormat->sendData(($this->curFrameStart / self::a), $data);
         $this->curFrameDataCount = 0;
     }
-
-
     protected function _fillNull()
     {
         $emptySet = [];
-
         foreach ($this->signals as $name => $aggregator) {
             $emptySet[$name] = null;
         }
-        $this->outputFormat->sendData($this->curFrameStart, $emptySet);
-
+        $this->outputFormat->sendData(($this->curFrameStart / self::a), $emptySet);
     }
-
     protected function _shiftOne()
     {
         if ($this->sampleInterval === false) {
             return; // No filling
         }
-        $this->curFrameStart += $this->sampleInterval;
-        $this->curFrameEnd = $this->curFrameStart + $this->sampleInterval - 0.00001;
+        $this->curFrameStart = $this->curFrameStart + $this->sampleInterval;
+        $this->curFrameEnd = $this->curFrameStart + $this->sampleInterval - 1;
     }
-
-
-
     public function push(float $timestamp, string $signalName, $value)
     {
+        $timestamp = (int) ($timestamp * self::a);
 
         if ($timestamp < $this->startTs || $timestamp > $this->endTs) {
             return;
@@ -114,7 +100,7 @@ class TimeSeries
 
         if ($this->sampleInterval === false) {
             // Unsampled data
-            $this->outputFormat->sendData($timestamp, [$signalName => $value]);
+            $this->outputFormat->sendData(($timestamp / self::a), [$signalName => $value]);
             return;
         }
 
@@ -134,15 +120,12 @@ class TimeSeries
                 $this->_fillNull();
             $this->_shiftOne();
         }
+
         $this->signals[$signalName]->addValue($value);
         $this->curFrameDataCount++;
-
-
     }
-
     public function close()
     {
-
         if ($this->curFrameDataCount > 0) {
             $this->_flush();
             $this->_shiftOne();
@@ -152,7 +135,6 @@ class TimeSeries
                 $this->_fillNull();
             $this->_shiftOne();
         }
-
         $this->outputFormat->close();
     }
 

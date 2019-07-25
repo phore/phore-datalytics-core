@@ -5,7 +5,10 @@ apache_fallback_resource: "/index.php"
 
 command:
   build:
+    - "sudo apt install php7.2-bcmath"
     - "composer update"
 
   test:
     - "./vendor/bin/phpunit --bootstrap vendor/autoload.php --testdox tests/"
+
+
