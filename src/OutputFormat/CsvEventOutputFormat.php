@@ -14,6 +14,7 @@ use Phore\FileSystem\FileStream;
 class CsvEventOutputFormat implements OutputFormat
 {
 
+    private $filename ="default_filename";
     private $outputHeandler;
     private $delimiter;
     private $header = [];
@@ -52,6 +53,17 @@ class CsvEventOutputFormat implements OutputFormat
             $this->outputHeandler->fputcsv($arr, $this->delimiter);
         }
         return true;
+    }
+
+    public function setFilename(string $filename)
+    {
+        $this->filename = $filename;
+    }
+
+    public function sendHttpHeaders()
+    {
+        header("Content-type: text/csv; charset=utf-8");
+        header("Content-Disposition: attachment; filename=\"{$this->filename}.csv\"");
     }
 
     public function close()

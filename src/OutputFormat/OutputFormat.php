@@ -16,6 +16,10 @@ interface OutputFormat
 
     public function sendData(float $ts, array $data);
 
+    public function setFilename(string $filename);
+
+    public function sendHttpHeaders();
+
     public function close();
 
 }

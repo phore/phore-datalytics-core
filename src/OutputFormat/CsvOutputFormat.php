@@ -16,6 +16,7 @@ class CsvOutputFormat implements OutputFormat
 {
     private $header = [];
     private $headerSend = false;
+    private $filename = null;
     private $outputHeandler;
     private $delimiter;
     private $eof = "false";
@@ -76,6 +77,20 @@ class CsvOutputFormat implements OutputFormat
 
         $this->outputHeandler->fputcsv($arr, $this->delimiter);
         return true;
+    }
+
+    public function setFilename(string $filename)
+    {
+        $this->filename = $filename;
+    }
+
+    public function sendHttpHeaders()
+    {
+        header("Content-type: text/csv; charset=utf-8");
+        if($this->filename !== null){
+            header("Content-Disposition: attachment; filename=\"{$this->filename}.csv\"");
+        }
+
     }
 
     public function close()
