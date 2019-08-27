@@ -52,7 +52,7 @@ class TbfOutputFormat implements OutputFormat
     public function sendHttpHeaders()
     {
         header('Content-Type: application/tbf; charset=utf-8');
-        header("Content-Disposition: attachment; filename=\"{$this->filename}.tbf\"");
+        header("Content-Disposition: attachment; filename=\"{$this->filename}\"");
     }
 
     public function close()

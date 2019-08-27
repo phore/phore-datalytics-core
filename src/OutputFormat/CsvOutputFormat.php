@@ -19,9 +19,9 @@ class CsvOutputFormat implements OutputFormat
     private $filename = null;
     private $outputHeandler;
     private $delimiter;
-    private $eof = "false";
+    private $eof = false;
 
-    public function __construct(FileStream $res = null, string $delimiter = "\t", string $eof = "false")
+    public function __construct(FileStream $res = null, string $delimiter = "\t", bool $eof = false)
     {
         if ($res === null)
             $res = phore_file("php://output")->fopen("w");
@@ -45,7 +45,7 @@ class CsvOutputFormat implements OutputFormat
 
     private function _ensureFooterSend()
     {
-        if($this->eof !== "true") {
+        if(!$this->eof) {
             return;
         }
         $headerLength = count($this->header);
@@ -88,7 +88,7 @@ class CsvOutputFormat implements OutputFormat
     {
         header("Content-type: text/csv; charset=utf-8");
         if($this->filename !== null){
-            header("Content-Disposition: attachment; filename=\"{$this->filename}.csv\"");
+            header("Content-Disposition: attachment; filename=\"{$this->filename}\"");
         }
 
     }

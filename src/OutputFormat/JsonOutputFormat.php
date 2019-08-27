@@ -19,7 +19,7 @@ class JsonOutputFormat implements OutputFormat
     private $data = [];
 
 
-    public function __construct(FileStream $res = null, string $delimiter = "\t", string $eof = "false")
+    public function __construct(FileStream $res = null)
     {
         $this->outputJson["data"] = [];
     }

@@ -16,7 +16,7 @@ class ArrayOutputFormat implements OutputFormat
 
     public $data = [];
     public $isClosed = false;
-    
+
     public function sendData(float $ts, array $data)
     {
         $row = ["ts" => $ts];
@@ -33,4 +33,16 @@ class ArrayOutputFormat implements OutputFormat
     {
         // TODO: Implement mapName() method.
     }
+
+    public function setFilename(string $filename)
+    {
+        // TODO: Implement setFilename() method.
+    }
+
+    public function sendHttpHeaders()
+    {
+        // TODO: Implement sendHttpHeaders() method.
+    }
+
+
 }
