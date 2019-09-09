@@ -105,7 +105,7 @@ class TimeSeries
         }
 
         if ( ! isset ($this->signals[$signalName]))
-            throw new \Exception("Signal '$signalName' not defined");
+            throw new \Exception("Signal '$signalName' not defined in TimeSeries");
 
         if ($timestamp < $this->curFrameStart)
             throw new \InvalidArgumentException("Timestamp not in chronological order");

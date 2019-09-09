@@ -206,4 +206,11 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
     }
 
+    public function testExceptionSignalNotInTimeSeries() {
+        $ts = $this->_createTs();
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Signal 'a' not defined in TimeSeries");
+        $ts->push(10, "a", 1);
+    }
+
 }
