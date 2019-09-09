@@ -23,13 +23,13 @@ class AggregatorFactoryTest extends TestCase
     public function testGetAggregator()
     {
         $aggregatorFactory = new AggregatorFactory();
-        Assert::isInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("avg"));
-        Assert::isInstanceOf(CountAggregator::class,    $aggregatorFactory->createAggregator("count"));
-        Assert::isInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator("first"));
-        Assert::isInstanceOf(MaxAggregator::class,      $aggregatorFactory->createAggregator("max"));
-        Assert::isInstanceOf(MinAggregator::class,      $aggregatorFactory->createAggregator("min"));
-        Assert::isInstanceOf(SumAggregator::class,      $aggregatorFactory->createAggregator("sum"));
-        Assert::isInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator());
+        $this->assertInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("avg"));
+        $this->assertInstanceOf(CountAggregator::class,    $aggregatorFactory->createAggregator("count"));
+        $this->assertInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator("first"));
+        $this->assertInstanceOf(MaxAggregator::class,      $aggregatorFactory->createAggregator("max"));
+        $this->assertInstanceOf(MinAggregator::class,      $aggregatorFactory->createAggregator("min"));
+        $this->assertInstanceOf(SumAggregator::class,      $aggregatorFactory->createAggregator("sum"));
+        $this->assertInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator());
     }
 
     public function testAggregatorUnknownException()
@@ -37,7 +37,7 @@ class AggregatorFactoryTest extends TestCase
         $aggregatorFactory = new AggregatorFactory();
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Unknown aggregator name: abc");
-        Assert::isInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("abc"));
+        $this->assertInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("abc"));
     }
 
 }

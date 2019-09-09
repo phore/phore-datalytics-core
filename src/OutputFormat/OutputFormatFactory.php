@@ -29,7 +29,7 @@ class OutputFormatFactory
                 return new TbfOutputFormat($res);
 
             default:
-                return new CsvOutputFormat($res, $delimiter, $eof);
+                throw new \InvalidArgumentException("Invalid Outputformat '$formatName'");
         }
     }
 }

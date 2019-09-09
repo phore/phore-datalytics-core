@@ -33,7 +33,7 @@ class CsvEventOutputFormatTest extends TestCase
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
-        $csvEventOutputFormat = new CsvEventOutputFormat($tmp, "\t", "true");
+        $csvEventOutputFormat = new CsvEventOutputFormat($tmp, "\t", true);
         $csvEventOutputFormat->mapName("sig1");
         $csvEventOutputFormat->mapName("sig2");
         $csvEventOutputFormat->mapName("sig3");
