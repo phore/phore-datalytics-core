@@ -42,10 +42,7 @@ class DataMergerTest extends TestCase
         $c1->close();
         $c2->close();
 
-        print_r ($of->data);
         $this->assertEquals(2, count($of->data));
-
-
 
     }
 
