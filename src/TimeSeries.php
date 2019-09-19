@@ -110,7 +110,7 @@ class TimeSeries
         if ($timestamp < $this->curFrameStart)
             throw new \InvalidArgumentException("Timestamp not in chronological order");
 
-        if ($timestamp >= $this->curFrameEnd && $this->curFrameDataCount > 0) {
+        if ($timestamp > $this->curFrameEnd && $this->curFrameDataCount > 0) {
             $this->_flush();
             $this->_shiftOne();
         }
