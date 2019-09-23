@@ -115,7 +115,7 @@ class TimeSeries
             $this->_shiftOne();
         }
 
-        while ($this->curFrameEnd < $timestamp) {
+        while ($timestamp > $this->curFrameEnd) {
             if ($this->fillEmpty)
                 $this->_fillNull();
             $this->_shiftOne();
