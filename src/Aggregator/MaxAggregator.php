@@ -36,6 +36,9 @@ class MaxAggregator implements Aggregator
 //        if (count($this->values) == 0)
 //            return null;
 //        return max($this->values);
+        if($this->max === -INF) {
+            return null;
+        }
         return $this->max;
     }
 }
