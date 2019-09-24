@@ -17,4 +17,10 @@ class MaxAggregatorTest extends TestCase
         $maxAggregator->addValue("nonNumeric");
         $this->assertSame($max,$maxAggregator->getAggregated());
     }
+
+    public function testReturnNullWhenNothingAggregated()
+    {
+        $maxAggregator = new MaxAggregator();
+        $this->assertSame(null,$maxAggregator->getAggregated());
+    }
 }
