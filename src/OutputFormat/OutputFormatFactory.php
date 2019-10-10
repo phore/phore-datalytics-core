@@ -13,7 +13,7 @@ use Phore\FileSystem\FileStream;
 
 class OutputFormatFactory
 {
-    public function createOutputFormat(string $formatName = "csv", bool $eof = false, FileStream $res = null, string $delimiter = "\t", bool $skipHeader = false) : OutputFormat
+    public function createOutputFormat(string $formatName = "csv", bool $eof = false, bool $skipHeader = false, FileStream $res = null, string $delimiter = "\t") : OutputFormat
     {
         switch ($formatName){
             case "csv":
