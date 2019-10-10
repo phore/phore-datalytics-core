@@ -206,4 +206,31 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
     }
 
+    public function testExceptionSignalNotInTimeSeries() {
+        $ts = $this->_createTs();
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Signal 'a' not defined in TimeSeries");
+        $ts->push(10, "a", 1);
+    }
+
+    public function testMultipleTsOnCurrentFrameEnd()
+    {
+//        $this->expectException(\InvalidArgumentException::class);
+//        $this->expectExceptionMessage("Timestamp not in chronological order");
+        $ts = new TimeSeries(20, 30, false, 0);
+        $ts->define("col1", new SumAggregator());
+        $ts->define("col2", new SumAggregator());
+        $ts->setOutputFormat($aof = new ArrayOutputFormat());
+        $ts->push(20.00, "col1", 1);
+        $ts->push(20.99999, "col1", 7);
+        $ts->push(20.99999, "col2", 9);
+        $ts->push(21, "col1", 3);
+        $ts->close();
+//        var_dump($aof->data);
+        $this->assertEquals(4, count ($aof->data));
+        $this->assertEquals(20, $aof->data[0]["ts"]);
+        $this->assertEquals(20.99999, $aof->data[1]["ts"]);
+        $this->assertEquals(20.99999, $aof->data[2]["ts"]);
+    }
+
 }

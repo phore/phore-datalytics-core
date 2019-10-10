@@ -105,17 +105,17 @@ class TimeSeries
         }
 
         if ( ! isset ($this->signals[$signalName]))
-            throw new \Exception("Signal '$signalName' not defined");
+            throw new \Exception("Signal '$signalName' not defined in TimeSeries");
 
         if ($timestamp < $this->curFrameStart)
             throw new \InvalidArgumentException("Timestamp not in chronological order");
 
-        if ($timestamp >= $this->curFrameEnd && $this->curFrameDataCount > 0) {
+        if ($timestamp > $this->curFrameEnd && $this->curFrameDataCount > 0) {
             $this->_flush();
             $this->_shiftOne();
         }
 
-        while ($this->curFrameEnd < $timestamp) {
+        while ($timestamp > $this->curFrameEnd) {
             if ($this->fillEmpty)
                 $this->_fillNull();
             $this->_shiftOne();
