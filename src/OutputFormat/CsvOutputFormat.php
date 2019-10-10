@@ -10,7 +10,6 @@ namespace Phore\Datalytics\Core\OutputFormat;
 
 
 use Phore\FileSystem\FileStream;
-use Psr\Http\Message\StreamInterface;
 
 class CsvOutputFormat implements OutputFormat
 {
@@ -21,13 +20,16 @@ class CsvOutputFormat implements OutputFormat
     private $delimiter;
     private $eof = false;
 
-    public function __construct(FileStream $res = null, string $delimiter = "\t", bool $eof = false)
+    public function __construct(FileStream $res = null, string $delimiter = "\t", bool $eof = false, bool $skipHeader = false)
     {
         if ($res === null)
             $res = phore_file("php://output")->fopen("w");
+        if($skipHeader)
+            $this->headerSend = true;
         $this->outputHeandler = $res;
         $this->delimiter = $delimiter;
         $this->eof = $eof;
+
     }
 
     private function _ensureHeaderSend()

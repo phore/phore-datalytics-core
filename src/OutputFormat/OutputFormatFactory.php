@@ -13,11 +13,11 @@ use Phore\FileSystem\FileStream;
 
 class OutputFormatFactory
 {
-    public function createOutputFormat(string $formatName = "csv", bool $eof = false, FileStream $res = null, string $delimiter = "\t") : OutputFormat
+    public function createOutputFormat(string $formatName = "csv", bool $eof = false, FileStream $res = null, string $delimiter = "\t", bool $skipHeader = false) : OutputFormat
     {
         switch ($formatName){
             case "csv":
-                return new CsvOutputFormat($res, $delimiter, $eof);
+                return new CsvOutputFormat($res, $delimiter, $eof, $skipHeader);
 
             case "csvevt":
                 return new CsvEventOutputFormat($res, $delimiter, $eof);
@@ -26,7 +26,7 @@ class OutputFormatFactory
                 return new JsonOutputFormat($res);
 
             case "tbf":
-                return new TbfOutputFormat($res);
+                return new TbfOutputFormat();
 
             default:
                 throw new \InvalidArgumentException("Invalid Outputformat '$formatName'");

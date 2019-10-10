@@ -9,7 +9,6 @@
 namespace Phore\Datalytics\Core\OutputFormat;
 
 
-use Phore\Datalytics\Core\OutputFormat\OutputFormat;
 use Phore\FileSystem\FileStream;
 use Talpa\BinFmt\V1\TCLDataWriter;
 use Talpa\BinFmt\V1\TMachineWriter;
