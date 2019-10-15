@@ -81,18 +81,9 @@ class CsvOutputFormat implements OutputFormat
         return true;
     }
 
-    public function setFilename(string $filename)
-    {
-        $this->filename = $filename;
-    }
-
     public function sendHttpHeaders()
     {
         header("Content-type: text/csv; charset=utf-8");
-        if($this->filename !== null){
-            header("Content-Disposition: attachment; filename=\"{$this->filename}\"");
-        }
-
     }
 
     public function close()

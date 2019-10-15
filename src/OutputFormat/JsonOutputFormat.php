@@ -13,7 +13,6 @@ use Phore\FileSystem\FileStream;
 
 class JsonOutputFormat implements OutputFormat
 {
-    private $filename ="default_filename";
     private $outputJson = [];
     private $jsonTs = null;
     private $data = [];
@@ -46,11 +45,6 @@ class JsonOutputFormat implements OutputFormat
             $this->data[$key] = $item;
         }
         return true;
-    }
-
-    public function setFilename(string $filename)
-    {
-        $this->filename = $filename;
     }
 
     public function sendHttpHeaders()

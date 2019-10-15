@@ -109,12 +109,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "4f88137ab5e805ed586f900deaea9a1a23f16ada"
+                "reference": "b747ab7e6fb2e5c8f7762f233a3317f088febe61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/4f88137ab5e805ed586f900deaea9a1a23f16ada",
-                "reference": "4f88137ab5e805ed586f900deaea9a1a23f16ada",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/b747ab7e6fb2e5c8f7762f233a3317f088febe61",
+                "reference": "b747ab7e6fb2e5c8f7762f233a3317f088febe61",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-10-09T20:21:16+00:00"
+            "time": "2019-10-10T14:41:52+00:00"
         },
         {
             "name": "psr/http-message",
@@ -217,12 +217,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "7c71fc2932158d00f24f10635bf3b3b8b6ee5b68"
+                "reference": "67dbbd519b584fdfb9f8d028912eb404ab411f8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/7c71fc2932158d00f24f10635bf3b3b8b6ee5b68",
-                "reference": "7c71fc2932158d00f24f10635bf3b3b8b6ee5b68",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/67dbbd519b584fdfb9f8d028912eb404ab411f8a",
+                "reference": "67dbbd519b584fdfb9f8d028912eb404ab411f8a",
                 "shasum": ""
             },
             "require": {
@@ -265,7 +265,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2019-07-02T13:37:32+00:00"
+            "time": "2019-10-14T11:56:32+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -321,12 +321,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phar-io/manifest.git",
-                "reference": "8c8bd1bb1a22f311b1b4886662b989d0d02aab77"
+                "reference": "6008a32fa23816a6ac71889c80da7d58c056c2bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/manifest/zipball/8c8bd1bb1a22f311b1b4886662b989d0d02aab77",
-                "reference": "8c8bd1bb1a22f311b1b4886662b989d0d02aab77",
+                "url": "https://api.github.com/repos/phar-io/manifest/zipball/6008a32fa23816a6ac71889c80da7d58c056c2bb",
+                "reference": "6008a32fa23816a6ac71889c80da7d58c056c2bb",
                 "shasum": ""
             },
             "require": {
@@ -372,7 +372,7 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2019-07-09T12:18:04+00:00"
+            "time": "2019-10-11T06:20:36+00:00"
         },
         {
             "name": "phar-io/version",
@@ -887,12 +887,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "cba1d157d7338e06e9e7b7d08f0dede7f79d16ca"
+                "reference": "a07d6ce5d21ecdfe7edeedaf5efb3be85c4f2046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/cba1d157d7338e06e9e7b7d08f0dede7f79d16ca",
-                "reference": "cba1d157d7338e06e9e7b7d08f0dede7f79d16ca",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a07d6ce5d21ecdfe7edeedaf5efb3be85c4f2046",
+                "reference": "a07d6ce5d21ecdfe7edeedaf5efb3be85c4f2046",
                 "shasum": ""
             },
             "require": {
@@ -962,7 +962,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-08T04:47:53+00:00"
+            "time": "2019-10-15T08:26:12+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

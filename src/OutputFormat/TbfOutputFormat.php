@@ -16,8 +16,6 @@ use Talpa\BinFmt\V1\TMachineWriter;
 class TbfOutputFormat implements OutputFormat
 {
 
-    private $filename ="default_filename";
-
     /**
      * @var TCLDataWriter
      */
@@ -43,15 +41,9 @@ class TbfOutputFormat implements OutputFormat
         }
     }
 
-    public function setFilename(string $filename)
-    {
-        $this->filename = $filename;
-    }
-
     public function sendHttpHeaders()
     {
         header('Content-Type: application/tbf; charset=utf-8');
-        header("Content-Disposition: attachment; filename=\"{$this->filename}\"");
     }
 
     public function close()
