@@ -132,7 +132,7 @@ class TimeSeriesTest extends TestCase
     {
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
-        $ts->push(11.1, "col1", 4);
+        $ts->push(11, "col1", 4);
         $ts->close();
         $this->assertEquals(1, count($this->outputFormat->data));
     }

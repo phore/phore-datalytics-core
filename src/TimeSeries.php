@@ -94,7 +94,7 @@ class TimeSeries
     {
         $timestamp = (int) ($timestamp * self::a);
 
-        if ($timestamp < $this->startTs || $timestamp > $this->endTs) {
+        if ($timestamp < $this->startTs || $timestamp >= $this->endTs) {
             return;
         }
 
