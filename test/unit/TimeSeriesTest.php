@@ -9,12 +9,12 @@
 namespace Test;
 
 
+use Exception;
+use InvalidArgumentException;
 use Phore\Datalytics\Core\Aggregator\FirstAggregator;
 use Phore\Datalytics\Core\Aggregator\SumAggregator;
 use Phore\Datalytics\Core\OutputFormat\ArrayOutputFormat;
-use Phore\Datalytics\Core\OutputFormat\OutputFormatFactory;
 use Phore\Datalytics\Core\TimeSeries;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class TimeSeriesTest extends TestCase
@@ -49,7 +49,7 @@ class TimeSeriesTest extends TestCase
         return $ts;
     }
 
-    protected function _createShortTs()
+    protected function _createShortTs(): TimeSeries
     {
         $ts = new TimeSeries(10,11);
         $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
@@ -57,7 +57,7 @@ class TimeSeriesTest extends TestCase
         return $ts;
     }
 
-    public function testOutputFlushedWithStartTimestampFillEmptyFalse()
+    public function testOutputFlushedWithStartTimestampFillEmptyFalse(): void
     {
         $ts = $this->_createTs();
         $ts->push(10.1, "col1", 1);
@@ -65,15 +65,15 @@ class TimeSeriesTest extends TestCase
         $this->assertEmpty($this->outputFormat->data);
         $ts->push(11.1, "col1", 4);
 
-        $this->assertEquals(1, count($this->outputFormat->data));
+        $this->assertCount(1, $this->outputFormat->data);
         $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
         $ts->close();
 
-        $this->assertEquals(2, count($this->outputFormat->data));
+        $this->assertCount(2, $this->outputFormat->data);
     }
 
 
-    public function testFillAfter()
+    public function testFillAfter(): void
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(10, "col1", 1);
@@ -88,7 +88,7 @@ class TimeSeriesTest extends TestCase
     }
 
 
-    public function testFillBefore()
+    public function testFillBefore(): void
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(11.1, "col1", 1);
@@ -105,7 +105,7 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(4 , $this->outputFormat->data[3]["col1"]);
     }
 
-    public function testFillBetween()
+    public function testFillBetween(): void
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(10.1, "col1", 1);
@@ -118,9 +118,9 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(4 , $this->outputFormat->data[3]["col1"]);
     }
 
-    public function testException()
+    public function testException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Timestamp not in chronological order");
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(12.1, "col1", 4);
@@ -128,16 +128,16 @@ class TimeSeriesTest extends TestCase
         $ts->push(13.1, "col1", 4);
     }
 
-    public function testTsEqualEndTs()
+    public function testTsEqualEndTs(): void
     {
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
         $ts->push(11, "col1", 4);
         $ts->close();
-        $this->assertEquals(1, count($this->outputFormat->data));
+        $this->assertCount(1, $this->outputFormat->data);
     }
 
-    public function testTsEqualEndTsWithFillEmpty()
+    public function testTsEqualEndTsWithFillEmpty(): void
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->push(10.1, "col1", 4);
@@ -147,7 +147,7 @@ class TimeSeriesTest extends TestCase
         $this->assertArrayNotHasKey(14, $this->outputFormat->data);
     }
 
-    public function testTsEqualStartTs()
+    public function testTsEqualStartTs(): void
     {
         $ts = $this->_createShortTs();
         $ts->push(10.1, "col1", 4);
@@ -155,19 +155,21 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(10, $this->outputFormat->data[0]["ts"]);
     }
 
-    public function testSampleIntervalZeroWillOutputUnsampledData()
+    public function testSampleIntervalZeroWillOutputUnsampledData(): void
     {
         $ts = new TimeSeries(10, 11, false, 0);
         $ts->define("a", new FirstAggregator());
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
         $ts->push(10.0, "a", 1);
         $ts->push(10.1, "a", 1);
-        $ts->close();$this->assertEquals(2, count ($aof->data));
+        $ts->close();
+        $this->assertCount(2, $aof->data);
         $this->assertEquals(10, $aof->data[0]["ts"]);
         $this->assertEquals(10.1, $aof->data[1]["ts"]);
     }
 
-    public function testSampleIntervalSmallerOneAndGreaterZero(){
+    public function testSampleIntervalSmallerOneAndGreaterZero(): void
+    {
         $ts = new TimeSeries(10, 11, false, 0.001);
         $ts->define("a", new FirstAggregator());
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
@@ -176,14 +178,15 @@ class TimeSeriesTest extends TestCase
         $ts->push(10.003, "a", 1);
         $ts->push(10.0499, "a", 1);
         $ts->close();
-        $this->assertEquals(4, count ($aof->data));
+        $this->assertCount(4, $aof->data);
         $this->assertEquals(10.001, $aof->data[0]["ts"]);
         $this->assertEquals(10.002, $aof->data[1]["ts"]);
         $this->assertEquals(10.003, $aof->data[2]["ts"]);
         $this->assertEquals(10.049, $aof->data[3]["ts"]);
     }
 
-    public function testShiftOne(){
+    public function testShiftOne(): void
+    {
         $ts = new TimeSeries(1560384010, 1560384012, false, 0.001);
         $ts->define("a", new FirstAggregator());
         $ts->setOutputFormat($aof = new ArrayOutputFormat());
@@ -191,12 +194,12 @@ class TimeSeriesTest extends TestCase
         $ts->push(1560384011.0242, "a", 1);
         $ts->push(1560384011.0242, "a", 1);
         $ts->close();
-        $this->assertEquals(2, count ($aof->data));
+        $this->assertCount(2, $aof->data);
         $this->assertEquals(1560384010.924, $aof->data[0]["ts"]);
         $this->assertEquals(1560384011.024, $aof->data[1]["ts"]);
     }
 
-    public function testHeaderIsSentWithNoData()
+    public function testHeaderIsSentWithNoData(): void
     {
         $ts = $this->_createTsWithFillEmpty();
         $ts->close();
@@ -206,17 +209,16 @@ class TimeSeriesTest extends TestCase
         $this->assertEquals(13, $this->outputFormat->data[count($this->outputFormat->data) - 1]["ts"]);
     }
 
-    public function testExceptionSignalNotInTimeSeries() {
+    public function testExceptionSignalNotInTimeSeries(): void
+    {
         $ts = $this->_createTs();
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Signal 'a' not defined in TimeSeries");
         $ts->push(10, "a", 1);
     }
 
-    public function testMultipleTsOnCurrentFrameEnd()
+    public function testMultipleTsOnCurrentFrameEnd(): void
     {
-//        $this->expectException(\InvalidArgumentException::class);
-//        $this->expectExceptionMessage("Timestamp not in chronological order");
         $ts = new TimeSeries(20, 30, false, 0);
         $ts->define("col1", new SumAggregator());
         $ts->define("col2", new SumAggregator());
@@ -226,8 +228,7 @@ class TimeSeriesTest extends TestCase
         $ts->push(20.99999, "col2", 9);
         $ts->push(21, "col1", 3);
         $ts->close();
-//        var_dump($aof->data);
-        $this->assertEquals(4, count ($aof->data));
+        $this->assertCount(4, $aof->data);
         $this->assertEquals(20, $aof->data[0]["ts"]);
         $this->assertEquals(20.99999, $aof->data[1]["ts"]);
         $this->assertEquals(20.99999, $aof->data[2]["ts"]);

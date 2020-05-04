@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class CsvEventOutputFormatTest extends TestCase
 {
-    public function testSendDataClose()
+    public function testSendDataClose(): void
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvEventOutput.csv")->fopen("w+");
@@ -29,7 +29,7 @@ class CsvEventOutputFormatTest extends TestCase
         $testFile->fclose();
     }
 
-    public function testFooterSend()
+    public function testFooterSend(): void
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");

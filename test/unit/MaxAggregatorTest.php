@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MaxAggregatorTest extends TestCase
 {
-    public function testAddValuesGetMax()
+    public function testAddValuesGetMax(): void
     {
         $maxAggregator = new MaxAggregator();
         $max=100;
@@ -18,9 +18,9 @@ class MaxAggregatorTest extends TestCase
         $this->assertSame($max,$maxAggregator->getAggregated());
     }
 
-    public function testReturnNullWhenNothingAggregated()
+    public function testReturnNullWhenNothingAggregated(): void
     {
         $maxAggregator = new MaxAggregator();
-        $this->assertSame(null,$maxAggregator->getAggregated());
+        $this->assertNull($maxAggregator->getAggregated());
     }
 }

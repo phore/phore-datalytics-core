@@ -2,13 +2,12 @@
 
 namespace Test;
 
-use Phore\Datalytics\Core\Aggregator\MaxAggregator;
 use Phore\Datalytics\Core\Aggregator\MinAggregator;
 use PHPUnit\Framework\TestCase;
 
 class MinAggregatorTest extends TestCase
 {
-    public function testAddValuesGetMin()
+    public function testAddValuesGetMin(): void
     {
         $minAggregator = new MinAggregator();
         $min=-100;
@@ -19,9 +18,9 @@ class MinAggregatorTest extends TestCase
         $this->assertSame($min, $minAggregator->getAggregated());
     }
 
-    public function testReturnNullWhenNothingAggregated()
+    public function testReturnNullWhenNothingAggregated(): void
     {
         $minAggregator = new MinAggregator();
-        $this->assertSame(null, $minAggregator->getAggregated());
+        $this->assertNull($minAggregator->getAggregated());
     }
 }

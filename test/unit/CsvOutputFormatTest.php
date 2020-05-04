@@ -8,13 +8,14 @@
 
 namespace Test;
 
+use InvalidArgumentException;
 use Phore\Datalytics\Core\OutputFormat\CsvOutputFormat;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class CsvOutputFormatTest extends TestCase
 {
-    public function testAddHeaderSendData()
+    public function testAddHeaderSendData(): void
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
@@ -29,7 +30,7 @@ class CsvOutputFormatTest extends TestCase
         $testFile->fclose();
     }
 
-    public function testFooterSend()
+    public function testFooterSend(): void
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
@@ -43,10 +44,10 @@ class CsvOutputFormatTest extends TestCase
         $testFile->fclose();
     }
 
-    public function testException()
+    public function testException(): void
     {
         system("sudo rm -R /tmp/*");
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Data missing for SignalName: 'test'");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
@@ -54,17 +55,17 @@ class CsvOutputFormatTest extends TestCase
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));
     }
 
-    public function testNoSignalNameException()
+    public function testNoSignalNameException(): void
     {
         system("sudo rm -R /tmp/*");
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("No SignalNames set");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");
         $csvOutputFormat = new CsvOutputFormat($tmp);
         Assert::assertEquals(true, $csvOutputFormat->sendData("1234",["neu"=>2, "neu2"=>3, "neu3" =>4]));
     }
 
-    public function testSkipHeaders()
+    public function testSkipHeaders(): void
     {
         system("sudo rm -R /tmp/*");
         $tmp = phore_file("/tmp/testCsvOutput.csv")->fopen("w+");

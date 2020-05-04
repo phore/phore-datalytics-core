@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class FirstAggregatorTest extends TestCase
 {
-    public function testAddValueGetAggregatedReset()
+    public function testAddValueGetAggregatedReset(): void
     {
         $firstAggregator = new FirstAggregator();
         $firstAggregator->addValue(4);
@@ -21,6 +21,6 @@ class FirstAggregatorTest extends TestCase
         $firstAggregator->addValue(9);
         $this->assertSame(4,$firstAggregator->getAggregated());
         $firstAggregator->reset();
-        $this->assertSame(null,$firstAggregator->getAggregated());
+        $this->assertNull($firstAggregator->getAggregated());
     }
 }

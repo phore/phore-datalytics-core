@@ -19,7 +19,7 @@ class DataMergerTest extends TestCase
 {
 
 
-    public function testDataMergeWithMultipleDataSources()
+    public function testDataMergeWithMultipleDataSources(): void
     {
 
         $ts = new TimeSeries(10, 20, false, 1);
@@ -32,17 +32,17 @@ class DataMergerTest extends TestCase
         $c2 = $ms->getInputChannel();
 
         $c1->push(10, ["a" => 1]);
-        $this->assertEquals(0, count ($of->data));
+        $this->assertCount(0, $of->data);
 
         $c2->push(11, ["b" => 2]);
         $c1->push(11, ["a" => 2]);
 
-        $this->assertEquals(1, count ($of->data));
+        $this->assertCount(1, $of->data);
 
         $c1->close();
         $c2->close();
 
-        $this->assertEquals(2, count($of->data));
+        $this->assertCount(2, $of->data);
 
     }
 

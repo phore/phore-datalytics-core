@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class CountAggregatorTest extends TestCase
 {
-    public function testAddValueGetAggregatedReset()
+    public function testAddValueGetAggregatedReset(): void
     {
         $countAggregator = new CountAggregator();
         $countAggregator->addValue(3);

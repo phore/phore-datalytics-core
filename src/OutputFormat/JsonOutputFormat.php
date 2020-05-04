@@ -23,22 +23,22 @@ class JsonOutputFormat implements OutputFormat
         $this->outputJson["data"] = [];
     }
 
-    public function mapName(string $signalName, string $headerAlias = null)
+    public function mapName(string $signalName, string $headerAlias = null): void
     {
         return;
     }
 
-    public function sendData(float $ts, array $data)
+    public function sendData(float $ts, array $data): bool
     {
-        if($this->jsonTs === null){
+        if ($this->jsonTs === null) {
             $this->jsonTs = $ts;
         }
-        if($this->jsonTs < $ts){
+        if ($this->jsonTs < $ts) {
             $this->outputJson["data"][] = $this->data;
             $this->jsonTs = $ts;
             $this->data = [];
         }
-        if(empty($this->data)){
+        if (empty($this->data)) {
             $this->data["timestamp"] = $ts;
         }
         foreach ($data as $key => $item) {
@@ -47,14 +47,14 @@ class JsonOutputFormat implements OutputFormat
         return true;
     }
 
-    public function sendHttpHeaders()
+    public function sendHttpHeaders(): void
     {
         header('Content-Type: application/json; charset=utf-8');
     }
 
-    public function close()
+    public function close(): bool
     {
-        $this->outputJson["data"][]= $this->data;
+        $this->outputJson["data"][] = $this->data;
         echo json_encode($this->outputJson);
         return true;
     }
