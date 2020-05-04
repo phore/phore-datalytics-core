@@ -12,24 +12,38 @@ namespace Phore\Datalytics\Core\Aggregator;
 class SumAggregator implements Aggregator
 {
 
+    /**
+     * @var array
+     */
     private $values = [];
 
-    public function reset()
+    /**
+     *
+     */
+    public function reset(): void
     {
         $this->values = [];
     }
 
-    public function addValue($value)
+    /**
+     * @param $value
+     */
+    public function addValue($value): void
     {
-        if ( ! is_numeric($value))
+        if (!is_numeric($value)) {
             return;
+        }
         $this->values[] = $value;
     }
 
+    /**
+     * @return float|int|mixed|null
+     */
     public function getAggregated()
     {
-        if (count($this->values) == 0)
+        if (count($this->values) === 0) {
             return null;
+        }
         return array_sum($this->values);
     }
 }

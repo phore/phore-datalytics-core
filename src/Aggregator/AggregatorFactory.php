@@ -9,11 +9,13 @@
 namespace Phore\Datalytics\Core\Aggregator;
 
 
+use InvalidArgumentException;
+
 class AggregatorFactory
 {
-    
+
     private $defaultAggregator;
-    
+
     public function __construct(string $defaultAggregator="first")
     {
         $this->defaultAggregator = $defaultAggregator;
@@ -22,9 +24,10 @@ class AggregatorFactory
 
     public function createAggregator(string $aggregatorName = null) : Aggregator
     {
-        if ($aggregatorName === null)
+        if ($aggregatorName === null) {
             $aggregatorName = $this->defaultAggregator;
-        
+        }
+
         switch ($aggregatorName) {
             case "avg":
                 return new AvgAggregator();
@@ -38,8 +41,10 @@ class AggregatorFactory
                 return new MinAggregator();
             case "sum":
                 return new SumAggregator();
+            case "last":
+                return new LastAggregator();
             default:
-                throw new \InvalidArgumentException("Unknown aggregator name: $aggregatorName");
+                throw new InvalidArgumentException("Unknown aggregator name: $aggregatorName");
 
         }
     }

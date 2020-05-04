@@ -9,30 +9,27 @@
 namespace Phore\Datalytics\Core\Aggregator;
 
 
-class FirstAggregator implements Aggregator
+class LastAggregator implements Aggregator
 {
     /**
      * @var null
      */
-    private $firstValue;
+    private $lastValue;
 
     /**
      *
      */
-    public function reset(): void
+    public function reset():void
     {
-        $this->firstValue = null;
+        $this->lastValue = null;
     }
 
     /**
      * @param $value
      */
-    public function addValue($value): void
+    public function addValue($value):void
     {
-        if ($this->firstValue !== null) {
-            return;
-        }
-        $this->firstValue = $value;
+        $this->lastValue = $value;
     }
 
     /**
@@ -40,6 +37,6 @@ class FirstAggregator implements Aggregator
      */
     public function getAggregated()
     {
-        return $this->firstValue;
+        return $this->lastValue;
     }
 }

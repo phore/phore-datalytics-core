@@ -12,31 +12,35 @@ namespace Phore\Datalytics\Core\Aggregator;
 class MaxAggregator implements Aggregator
 {
 
-//    private $values = [];
+    /**
+     * @var int
+     */
     private $max = -INF;
 
-    public function reset()
+    /**
+     *
+     */
+    public function reset(): void
     {
-//        $this->values = [];
         $this->max = -INF;
     }
 
-    public function addValue($value)
+    /**
+     * @param $value
+     */
+    public function addValue($value): void
     {
-//        if ( ! is_numeric($value))
-//            return;
-//        $this->values[] = $value;
-        if(is_numeric($value) && $value>$this->max) {
-            $this->max=$value;
+        if (is_numeric($value) && $value > $this->max) {
+            $this->max = $value;
         }
     }
 
-    public function getAggregated()
+    /**
+     * @return int|null
+     */
+    public function getAggregated(): ?int
     {
-//        if (count($this->values) == 0)
-//            return null;
-//        return max($this->values);
-        if($this->max === -INF) {
+        if ($this->max === -INF) {
             return null;
         }
         return $this->max;

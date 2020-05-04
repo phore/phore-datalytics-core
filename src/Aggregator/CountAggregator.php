@@ -11,20 +11,32 @@ namespace Phore\Datalytics\Core\Aggregator;
 
 class CountAggregator implements Aggregator
 {
+    /**
+     * @var int
+     */
     private $count = 0;
-    
-    public function reset()
+
+    /**
+     *
+     */
+    public function reset(): void
     {
         $this->count = 0;
     }
 
-    public function addValue($value)
+    /**
+     * @param $value
+     */
+    public function addValue($value): void
     {
         $this->count++;
     }
 
-    public function getAggregated()
+    /**
+     * @return int
+     */
+    public function getAggregated(): int
     {
-        return $this->count;   
+        return $this->count;
     }
 }

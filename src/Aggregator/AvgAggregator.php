@@ -12,27 +12,44 @@ namespace Phore\Datalytics\Core\Aggregator;
 class AvgAggregator implements Aggregator
 {
 
+    /**
+     * @var int
+     */
     private $sum = 0;
+    /**
+     * @var int
+     */
     private $numValues = 0;
 
-    public function reset()
+    /**
+     *
+     */
+    public function reset(): void
     {
         $this->sum = 0;
         $this->numValues = 0;
     }
 
-    public function addValue($value)
+    /**
+     * @param $value
+     */
+    public function addValue($value): void
     {
-        if ( ! is_numeric($value))
+        if (!is_numeric($value)) {
             return;
+        }
         $this->sum += $value;
         $this->numValues++;
     }
 
+    /**
+     * @return float|int|mixed|null
+     */
     public function getAggregated()
     {
-        if ($this->numValues === 0)
+        if ($this->numValues === 0) {
             return null;
+        }
         return $this->sum / $this->numValues;
     }
 }

@@ -8,19 +8,20 @@
 
 namespace Test;
 
+use InvalidArgumentException;
 use Phore\Datalytics\Core\Aggregator\AggregatorFactory;
 use Phore\Datalytics\Core\Aggregator\AvgAggregator;
 use Phore\Datalytics\Core\Aggregator\CountAggregator;
 use Phore\Datalytics\Core\Aggregator\FirstAggregator;
+use Phore\Datalytics\Core\Aggregator\LastAggregator;
 use Phore\Datalytics\Core\Aggregator\MaxAggregator;
 use Phore\Datalytics\Core\Aggregator\MinAggregator;
 use Phore\Datalytics\Core\Aggregator\SumAggregator;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AggregatorFactoryTest extends TestCase
 {
-    public function testGetAggregator()
+    public function testGetAggregator(): void
     {
         $aggregatorFactory = new AggregatorFactory();
         $this->assertInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("avg"));
@@ -29,13 +30,14 @@ class AggregatorFactoryTest extends TestCase
         $this->assertInstanceOf(MaxAggregator::class,      $aggregatorFactory->createAggregator("max"));
         $this->assertInstanceOf(MinAggregator::class,      $aggregatorFactory->createAggregator("min"));
         $this->assertInstanceOf(SumAggregator::class,      $aggregatorFactory->createAggregator("sum"));
+        $this->assertInstanceOf(LastAggregator::class,     $aggregatorFactory->createAggregator("last"));
         $this->assertInstanceOf(FirstAggregator::class,    $aggregatorFactory->createAggregator());
     }
 
-    public function testAggregatorUnknownException()
+    public function testAggregatorUnknownException(): void
     {
         $aggregatorFactory = new AggregatorFactory();
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Unknown aggregator name: abc");
         $this->assertInstanceOf(AvgAggregator::class,      $aggregatorFactory->createAggregator("abc"));
     }

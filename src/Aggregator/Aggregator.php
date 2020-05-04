@@ -11,7 +11,19 @@ namespace Phore\Datalytics\Core\Aggregator;
 
 interface Aggregator
 {
+    /**
+     * @return mixed
+     */
     public function reset();
+
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function addValue($value);
+
+    /**
+     * @return mixed
+     */
     public function getAggregated();
 }
