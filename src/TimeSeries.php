@@ -9,14 +9,19 @@
 namespace Phore\Datalytics\Core;
 
 
+use InvalidArgumentException;
 use Phore\Datalytics\Core\Aggregator\Aggregator;
 use Phore\Datalytics\Core\OutputFormat\OutputFormat;
+use RuntimeException;
 
 
 class TimeSeries
 {
 
-    const a = 100000;
+    /**
+     *
+     */
+    public const a = 100000;
 
     /**
      * @var Aggregator[]
@@ -30,41 +35,86 @@ class TimeSeries
     private $outputFormat;
 
 
+    /**
+     * @var bool|int
+     */
     private $sampleInterval;
+    /**
+     * @var bool
+     */
     private $fillEmpty;
+    /**
+     * @var int
+     */
     private $startTs;
+    /**
+     * @var int
+     */
     private $endTs;
 
+    /**
+     * @var int
+     */
     private $curFrameStart;
+    /**
+     * @var int
+     */
     private $curFrameEnd;
+    /**
+     * @var int
+     */
     private $curFrameDataCount = 0;
-
-    public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1)
+    private $ignoreErrors;
+    /**
+     * TimeSeries constructor.
+     * @param float $startTs
+     * @param float $endTs
+     * @param bool $fillEmpty
+     * @param float|int $sampleInterval
+     */
+    public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1, bool $ignoreErrors = false)
     {
         if ($sampleInterval < 0.0001) {
             $this->sampleInterval = false;
-            if ($fillEmpty)
-                throw new \InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
+            if ($fillEmpty) {
+                throw new InvalidArgumentException("Cannot fill with undefined or zero sample interval.");
+            }
         } else {
             $this->sampleInterval = (int) ($sampleInterval * self::a);
         }
+        $this->ignoreErrors = $ignoreErrors;
         $this->fillEmpty = $fillEmpty;
         $this->startTs = (int) ($startTs * self::a);
         $this->endTs = (int) ($endTs * self::a);
-        $this->curFrameStart = (int) ($this->startTs);
-        $this->curFrameEnd = (int) ($this->startTs + $this->sampleInterval - 1);
+        $this->curFrameStart = ($this->startTs);
+        $this->curFrameEnd = ($this->startTs + $this->sampleInterval - 1);
     }
+
+    /**
+     * @param OutputFormat $outputFormat
+     * @return $this
+     */
     public function setOutputFormat(OutputFormat $outputFormat) : self
     {
         $this->outputFormat = $outputFormat;
         return $this;
     }
+
+    /**
+     * @param $name
+     * @param Aggregator $aggregator
+     * @return $this
+     */
     public function define($name, Aggregator $aggregator) : self
     {
         $this->signals[$name] = $aggregator;
         return $this;
     }
-    protected function _flush()
+
+    /**
+     *
+     */
+    protected function _flush(): void
     {
         $data = [];
         foreach ($this->signals as $name => $aggregator) {
@@ -74,7 +124,11 @@ class TimeSeries
         $this->outputFormat->sendData(($this->curFrameStart / self::a), $data);
         $this->curFrameDataCount = 0;
     }
-    protected function _fillNull()
+
+    /**
+     *
+     */
+    protected function _fillNull(): void
     {
         $emptySet = [];
         foreach ($this->signals as $name => $aggregator) {
@@ -82,15 +136,26 @@ class TimeSeries
         }
         $this->outputFormat->sendData(($this->curFrameStart / self::a), $emptySet);
     }
-    protected function _shiftOne()
+
+    /**
+     *
+     */
+    protected function _shiftOne(): void
     {
         if ($this->sampleInterval === false) {
             return; // No filling
         }
-        $this->curFrameStart = $this->curFrameStart + $this->sampleInterval;
+        $this->curFrameStart += $this->sampleInterval;
         $this->curFrameEnd = $this->curFrameStart + $this->sampleInterval - 1;
     }
-    public function push(float $timestamp, string $signalName, $value)
+
+    /**
+     * @param float|int $timestamp
+     * @param string $signalName
+     * @param $value
+     * @param bool $ignoreErrors
+     */
+    public function push(float $timestamp, string $signalName, $value): void
     {
         $timestamp = (int) ($timestamp * self::a);
 
@@ -98,17 +163,21 @@ class TimeSeries
             return;
         }
 
+        if ( ! isset ($this->signals[$signalName])) {
+            throw new RuntimeException("Signal '$signalName' not defined in TimeSeries");
+        }
+
+        if ($timestamp < $this->curFrameStart) {
+            if($this->ignoreErrors){
+                return;
+            }
+            throw new InvalidArgumentException("Timestamp not in chronological order");
+        }
+
         if ($this->sampleInterval === false) {
-            // Unsampled data
             $this->outputFormat->sendData(($timestamp / self::a), [$signalName => $value]);
             return;
         }
-
-        if ( ! isset ($this->signals[$signalName]))
-            throw new \Exception("Signal '$signalName' not defined in TimeSeries");
-
-        if ($timestamp < $this->curFrameStart)
-            throw new \InvalidArgumentException("Timestamp not in chronological order");
 
         if ($timestamp > $this->curFrameEnd && $this->curFrameDataCount > 0) {
             $this->_flush();
@@ -116,23 +185,29 @@ class TimeSeries
         }
 
         while ($timestamp > $this->curFrameEnd) {
-            if ($this->fillEmpty)
+            if ($this->fillEmpty) {
                 $this->_fillNull();
+            }
             $this->_shiftOne();
         }
 
         $this->signals[$signalName]->addValue($value);
         $this->curFrameDataCount++;
     }
-    public function close()
+
+    /**
+     *
+     */
+    public function close(): void
     {
         if ($this->curFrameDataCount > 0) {
             $this->_flush();
             $this->_shiftOne();
         }
         while ($this->curFrameEnd < $this->endTs && $this->fillEmpty) {
-            if ($this->fillEmpty)
+            if ($this->fillEmpty) {
                 $this->_fillNull();
+            }
             $this->_shiftOne();
         }
         $this->outputFormat->close();

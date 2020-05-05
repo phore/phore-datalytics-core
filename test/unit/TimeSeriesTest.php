@@ -41,6 +41,14 @@ class TimeSeriesTest extends TestCase
         return $ts;
     }
 
+    protected function _createTsWithIgnoreErrors() : TimeSeries
+    {
+        $ts = new TimeSeries(10,14, false, 1, true);
+        $ts->setOutputFormat($this->outputFormat = new ArrayOutputFormat());
+        $ts->define("col1", new SumAggregator());
+        return $ts;
+    }
+
     protected function _createTs() : TimeSeries
     {
         $ts = new TimeSeries(10,14);
@@ -126,6 +134,16 @@ class TimeSeriesTest extends TestCase
         $ts->push(12.1, "col1", 4);
         $ts->push(10.1, "col1", 1);
         $ts->push(13.1, "col1", 4);
+    }
+
+    public function testIgnoreErrors(): void
+    {
+        $ts = $this->_createTsWithIgnoreErrors();
+        $ts->push(12.1, "col1", 4);
+        $ts->push(10.1, "col1", 1);
+        $ts->push(13.1, "col1", 4);
+        $ts->close();
+        $this->assertCount(2, $this->outputFormat->data);
     }
 
     public function testTsEqualEndTs(): void
