@@ -9,6 +9,7 @@
 namespace Phore\Datalytics\Core\OutputFormat;
 
 
+use Phore\FileSystem\Exception\FileAccessException;
 use Phore\FileSystem\FileStream;
 
 /**
@@ -18,10 +19,10 @@ use Phore\FileSystem\FileStream;
 class CsvEventOutputFormat implements OutputFormat
 {
 
-    private $outputHeandler;
+    private $outputHandler;
     private $delimiter;
     private $header = [];
-    private $eof = false;
+    private $eof;
 
     /**
      * CsvEventOutputFormat constructor.
@@ -32,29 +33,31 @@ class CsvEventOutputFormat implements OutputFormat
 
     public function __construct(FileStream $res = null, string $delimiter = "\t", bool $eof = false)
     {
-        if ($res === null)
-            $res = phore_file("php://output")->fopen("w");
-        $this->outputHeandler = $res;
+        if ($res === null) {
+            $res = phore_file('php://output')->fopen('w');
+        }
+        $this->outputHandler = $res;
         $this->delimiter = $delimiter;
         $this->eof = $eof;
     }
 
-    private function _ensureFooterSend()
+    private function _ensureFooterSend(): void
     {
-        if(!$this->eof){
+        if (!$this->eof) {
             return;
         }
-        $this->outputHeandler->fputcsv(array(0 => "eof", 1 => "eof", 2 => "eof"), $this->delimiter);
+        $this->outputHandler->fputcsv(array(0 => 'eof', 1 => 'eof', 2 => 'eof'), $this->delimiter);
     }
 
     /**
      * @param string $signalName
      * @param string|null $headerAlias
      */
-    public function mapName(string $signalName, string $headerAlias = null)
+    public function mapName(string $signalName, string $headerAlias = null): void
     {
-        if($headerAlias === null)
+        if ($headerAlias === null) {
             $headerAlias = $signalName;
+        }
         $this->header[$signalName] = $headerAlias;
     }
 
@@ -62,15 +65,15 @@ class CsvEventOutputFormat implements OutputFormat
      * @param float $ts
      * @param array $data
      * @return bool
-     * @throws \Phore\FileSystem\Exception\FileAccessException
+     * @throws FileAccessException
      */
-    public function sendData(float $ts, array $data)
+    public function sendData(float $ts, array $data): bool
     {
         $arr[0] = $ts;
         foreach ($data as $key => $item) {
             $arr[1] = $key;
             $arr[2] = $item;
-            $this->outputHeandler->fputcsv($arr, $this->delimiter);
+            $this->outputHandler->fputcsv($arr, $this->delimiter);
         }
         return true;
     }
@@ -78,17 +81,17 @@ class CsvEventOutputFormat implements OutputFormat
     /**
      *
      */
-    public function sendHttpHeaders()
+    public function sendHttpHeaders(): void
     {
-        header("Content-type: text/csv; charset=utf-8");
+        header('Content-type: text/csv; charset=utf-8');
     }
 
     /**
-     * @throws \Phore\FileSystem\Exception\FileAccessException
+     * @throws FileAccessException
      */
-    public function close()
+    public function close(): void
     {
         $this->_ensureFooterSend();
-        $this->outputHeandler->fclose();
+        $this->outputHandler->fclose();
     }
 }

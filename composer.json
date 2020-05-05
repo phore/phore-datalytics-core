@@ -11,7 +11,8 @@
     "php": ">=7.1",
     "phore/filesystem": "*",
     "ext-json": "*",
-    "phore/http-client": "*"
+    "phore/http-client": "*",
+    "talpa/otic-php": "dev-otic2"
   },
   "autoload": {
     "psr-4": {

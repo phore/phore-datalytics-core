@@ -175,7 +175,7 @@ class TimeSeries
             if($this->ignoreErrors){
                 return;
             }
-            throw new InvalidArgumentException("Timestamp not in chronological order");
+            throw new InvalidArgumentException('Timestamp not in chronological order');
         }
 
         if ($this->sampleInterval === false) {

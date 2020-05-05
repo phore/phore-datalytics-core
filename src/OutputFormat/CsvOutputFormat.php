@@ -9,87 +9,93 @@
 namespace Phore\Datalytics\Core\OutputFormat;
 
 
+use InvalidArgumentException;
 use Phore\FileSystem\FileStream;
 
 class CsvOutputFormat implements OutputFormat
 {
     private $header = [];
     private $headerSend = false;
-    private $filename = null;
-    private $outputHeandler;
+    private $outputHandler;
     private $delimiter;
-    private $eof = false;
+    private $eof;
 
     public function __construct(FileStream $res = null, string $delimiter = "\t", bool $eof = false, bool $skipHeader = false)
     {
-        if ($res === null)
-            $res = phore_file("php://output")->fopen("w");
-        if($skipHeader)
+        if ($res === null) {
+            $res = phore_file('php://output')->fopen('w');
+        }
+        if ($skipHeader) {
             $this->headerSend = true;
-        $this->outputHeandler = $res;
+        }
+        $this->outputHandler = $res;
         $this->delimiter = $delimiter;
         $this->eof = $eof;
 
     }
 
-    private function _ensureHeaderSend()
+    private function _ensureHeaderSend(): void
     {
-        if($this->headerSend === true)
+        if ($this->headerSend === true) {
             return;
-        $arr = ["ts"];
+        }
+        $arr = ['ts'];
         foreach ($this->header as $signalName => $alias) {
             $arr[] = $alias;
         }
 
-        $this->outputHeandler->fputcsv($arr,$this->delimiter);
+        $this->outputHandler->fputcsv($arr, $this->delimiter);
         $this->headerSend = true;
     }
 
-    private function _ensureFooterSend()
+    private function _ensureFooterSend(): void
     {
-        if(!$this->eof) {
+        if (!$this->eof) {
             return;
         }
         $headerLength = count($this->header);
-        for($i = 0; $i <= $headerLength; $i++){
-            $arr[] = "eof";
+        for ($i = 0; $i <= $headerLength; $i++) {
+            $arr[] = 'eof';
         }
-        $this->outputHeandler->fputcsv($arr, $this->delimiter);
+        $this->outputHandler->fputcsv($arr, $this->delimiter);
     }
 
-    public function mapName(string $signalName, string $headerAlias = null)
+    public function mapName(string $signalName, string $headerAlias = null): void
     {
-        if($headerAlias === null)
+        if ($headerAlias === null) {
             $headerAlias = $signalName;
+        }
         $this->header[$signalName] = $headerAlias;
     }
 
-    public function sendData(float $ts, array $data)
+    public function sendData(float $ts, array $data): bool
     {
 
         $this->_ensureHeaderSend();
-        if(empty($this->header))
-            throw new \InvalidArgumentException("No SignalNames set");
+        if (empty($this->header)) {
+            throw new InvalidArgumentException('No SignalNames set');
+        }
         foreach ($this->header as $signalName => $alias) {
-            if(! array_key_exists($signalName, $data))
-                throw new \InvalidArgumentException("Data missing for SignalName: '$signalName'");
+            if (!array_key_exists($signalName, $data)) {
+                throw new InvalidArgumentException("Data missing for SignalName: '$signalName'");
+            }
         }
         array_unshift($data, $ts);
-        
 
-        $this->outputHeandler->fputcsv($data, $this->delimiter);
+
+        $this->outputHandler->fputcsv($data, $this->delimiter);
         return true;
     }
 
-    public function sendHttpHeaders()
+    public function sendHttpHeaders(): void
     {
-        header("Content-type: text/csv; charset=utf-8");
+        header('Content-type: text/csv; charset=utf-8');
     }
 
-    public function close()
+    public function close(): void
     {
         $this->_ensureHeaderSend();
         $this->_ensureFooterSend();
-        $this->outputHeandler->fclose();
+        $this->outputHandler->fclose();
     }
 }

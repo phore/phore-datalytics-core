@@ -24,7 +24,7 @@ class ArrayOutputFormat implements OutputFormat
         $this->data[] = $row;
     }
 
-    public function close()
+    public function close(): void
     {
         $this->isClosed = true;
     }

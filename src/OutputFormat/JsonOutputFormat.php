@@ -14,13 +14,12 @@ use Phore\FileSystem\FileStream;
 class JsonOutputFormat implements OutputFormat
 {
     private $outputJson = [];
-    private $jsonTs = null;
+    private $jsonTs;
     private $data = [];
 
-
-    public function __construct(FileStream $res = null)
+    public function __construct()
     {
-        $this->outputJson["data"] = [];
+        $this->outputJson['data'] = [];
     }
 
     public function mapName(string $signalName, string $headerAlias = null): void
@@ -34,12 +33,12 @@ class JsonOutputFormat implements OutputFormat
             $this->jsonTs = $ts;
         }
         if ($this->jsonTs < $ts) {
-            $this->outputJson["data"][] = $this->data;
+            $this->outputJson['data'][] = $this->data;
             $this->jsonTs = $ts;
             $this->data = [];
         }
         if (empty($this->data)) {
-            $this->data["timestamp"] = $ts;
+            $this->data['timestamp'] = $ts;
         }
         foreach ($data as $key => $item) {
             $this->data[$key] = $item;
@@ -54,7 +53,7 @@ class JsonOutputFormat implements OutputFormat
 
     public function close(): bool
     {
-        $this->outputJson["data"][] = $this->data;
+        $this->outputJson['data'][] = $this->data;
         echo json_encode($this->outputJson);
         return true;
     }

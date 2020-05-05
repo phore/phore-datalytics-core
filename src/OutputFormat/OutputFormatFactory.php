@@ -13,19 +13,22 @@ use Phore\FileSystem\FileStream;
 
 class OutputFormatFactory
 {
-    public function createOutputFormat(string $formatName = "csv", bool $eof = false, bool $skipHeader = false, FileStream $res = null, string $delimiter = "\t") : OutputFormat
+    public function createOutputFormat(string $formatName = 'csv', bool $eof = false, bool $skipHeader = false, FileStream $res = null, string $delimiter = "\t") : OutputFormat
     {
         switch ($formatName){
-            case "csv":
+            case 'csv':
                 return new CsvOutputFormat($res, $delimiter, $eof, $skipHeader);
 
-            case "csvevt":
+            case 'otic':
+                return new OticOutputFormat();
+
+            case 'csvevt':
                 return new CsvEventOutputFormat($res, $delimiter, $eof);
 
-            case "json":
-                return new JsonOutputFormat($res);
+            case 'json':
+                return new JsonOutputFormat();
 
-            case "tbf":
+            case 'tbf':
                 return new TbfOutputFormat();
 
             default:
