@@ -21,7 +21,7 @@ class OticOutputFormat implements OutputFormat
     {
         $this->oticWriter = new OticWriter();
         $this->tempfile = phore_tempfile();
-        $this->oticWriter->open($this->tempfile);
+        $this->oticWriter->open($this->tempfile->getFilename());
     }
 
     public function mapName(string $signalName, string $headerAlias = null): void
