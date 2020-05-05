@@ -64,13 +64,18 @@ class TimeSeries
      * @var int
      */
     private $curFrameDataCount = 0;
+    /**
+     * @var bool
+     */
     private $ignoreErrors;
+
     /**
      * TimeSeries constructor.
      * @param float $startTs
      * @param float $endTs
      * @param bool $fillEmpty
      * @param float|int $sampleInterval
+     * @param bool $ignoreErrors
      */
     public function __construct(float $startTs, float $endTs, bool $fillEmpty = false, float $sampleInterval = 1, bool $ignoreErrors = false)
     {
@@ -153,7 +158,6 @@ class TimeSeries
      * @param float|int $timestamp
      * @param string $signalName
      * @param $value
-     * @param bool $ignoreErrors
      */
     public function push(float $timestamp, string $signalName, $value): void
     {
