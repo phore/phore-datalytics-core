@@ -30,7 +30,7 @@ class OticOutputFormat implements OutputFormat
         $this->header[$signalName] = $headerAlias;
     }
 
-    public function sendData(float $ts, array $data, $unit = 'test'): bool
+    public function sendData(float $ts, array $data): bool
     {
         if (empty($this->header)) {
             throw new \InvalidArgumentException('No SignalNames set');
@@ -41,7 +41,7 @@ class OticOutputFormat implements OutputFormat
             }
         }
         foreach ($data as $key => $item) {
-            $this->oticWriter->inject($ts, $key, $item, $unit); //unit müsste dann quasi auch ein array sein
+            $this->oticWriter->inject($ts, $key, $item, '');
         }
         return true;
     }

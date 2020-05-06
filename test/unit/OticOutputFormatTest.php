@@ -1,14 +1,13 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: oem
- * Date: 24.10.18
- * Time: 09:41
+ * User: Jan Zimmermann
+ * Date: 04.05.2020
+ * Time: 15:30
  */
 
 namespace Test;
 
-use Otic\OticReader;
 use Otic\OticWriter;
 use Phore\Datalytics\Core\OutputFormat\OticOutputFormat;
 use PHPUnit\Framework\TestCase;
@@ -35,9 +34,9 @@ class OticOutputFormatTest extends TestCase
 
         $oticWriter = new OticWriter();
         $oticWriter->open($file = phore_file('/tmp/test.otic'));
-        $oticWriter->inject('1234', 'sigName', 2, 'test');
-        $oticWriter->inject('1234', 'sigName2', 3, 'test');
-        $oticWriter->inject('1234', 'sigName3', 4, 'test');
+        $oticWriter->inject('1234', 'sigName', 2, '');
+        $oticWriter->inject('1234', 'sigName2', 3, '');
+        $oticWriter->inject('1234', 'sigName3', 4, '');
         $oticWriter->close();
         $contents = $file->get_contents();
         $this->expectOutputString($contents);
