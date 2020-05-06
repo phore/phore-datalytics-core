@@ -8,6 +8,7 @@
 namespace Phore\Datalytics\Core\OutputFormat;
 
 use Otic\OticWriter;
+use Phore\FileSystem\PhoreTempFile;
 
 class OticOutputFormat implements OutputFormat
 {
@@ -19,7 +20,7 @@ class OticOutputFormat implements OutputFormat
     {
         $this->oticWriter = new OticWriter();
         $this->tempFile = phore_tempfile();
-        $this->oticWriter->open($this->tempFile->getFilename());
+        $this->oticWriter->open($this->tempFile);
     }
 
     public function mapName(string $signalName, string $headerAlias = null): void
@@ -56,7 +57,7 @@ class OticOutputFormat implements OutputFormat
     public function close(): void
     {
         $this->oticWriter->close();
-        readfile($this->tempFile->getFilename());
+        readfile($this->tempFile);
         $this->tempFile->unlink();
     }
 }
