@@ -1,13 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: matthias
- * Date: 16.10.18
- * Time: 16:06
+ * User: Jan Zimmermann
+ * Date: 04.05.2020
+ * Time: 15:00
  */
 
 namespace Phore\Datalytics\Core\OutputFormat;
-
 
 use Otic\OticWriter;
 
@@ -15,13 +13,13 @@ class OticOutputFormat implements OutputFormat
 {
     private $header = [];
     private $oticWriter;
-    private $tempfile;
+    private $tempFile;
 
     public function __construct()
     {
         $this->oticWriter = new OticWriter();
-        $this->tempfile = phore_tempfile();
-        $this->oticWriter->open($this->tempfile->getFilename());
+        $this->tempFile = phore_tempfile();
+        $this->oticWriter->open($this->tempFile->getFilename());
     }
 
     public function mapName(string $signalName, string $headerAlias = null): void
@@ -32,7 +30,7 @@ class OticOutputFormat implements OutputFormat
         $this->header[$signalName] = $headerAlias;
     }
 
-    public function sendData(float $ts, array $data, $unit = null): bool
+    public function sendData(float $ts, array $data, $unit = 'test'): bool
     {
         if (empty($this->header)) {
             throw new \InvalidArgumentException('No SignalNames set');
@@ -42,9 +40,9 @@ class OticOutputFormat implements OutputFormat
                 throw new \InvalidArgumentException("Data missing for SignalName: '$signalName'");
             }
         }
-
-        $this->oticWriter->inject($ts, current($data), $data[0], $unit);
-
+        foreach ($data as $key => $item) {
+            $this->oticWriter->inject($ts, $key, $item, $unit); //unit müsste dann quasi auch ein array sein
+        }
         return true;
     }
 
@@ -52,13 +50,13 @@ class OticOutputFormat implements OutputFormat
     {
         header('Content-Description: File Transfer');
         header('Content-type:  application/octet-stream; charset=utf-8');
-        header('Content-Length: ' . filesize($this->tempfile));
+        header('Content-Length: ' . filesize($this->tempFile));
     }
 
     public function close(): void
     {
         $this->oticWriter->close();
-        readfile($this->tempfile->getFilename());
-        $this->tempfile->unlink();
+        readfile($this->tempFile->getFilename());
+        $this->tempFile->unlink();
     }
 }

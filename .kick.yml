@@ -6,6 +6,7 @@ apache_fallback_resource: "/index.php"
 command:
   build:
     - "composer update"
+    - "vendor/talpa/otic-php/lib/install-otic-extension.sh"
 
   test:
     - "phpunit"
