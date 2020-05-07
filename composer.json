@@ -21,6 +21,13 @@
 
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": [
+        "test/unit"
+      ]
+    }
+  },
   "minimum-stability": "dev",
   "require-dev": {
     "phpunit/phpunit": "*",

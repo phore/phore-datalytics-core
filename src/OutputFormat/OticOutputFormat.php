@@ -98,7 +98,7 @@ class OticOutputFormat implements OutputFormat
     }
 
     /**
-     *  sets additional http headers for a file-download
+     * sets additional http headers for a file-download
      * @return void
      */
     public function sendHttpHeaders(): void
