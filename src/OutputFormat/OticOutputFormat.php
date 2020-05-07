@@ -1,8 +1,8 @@
 <?php
 /**
- * User: Jan Zimmermann
- * Date: 04.05.2020
- * Time: 15:00
+ * @author Jan Zimmermann <jan@ueberruhr.de>
+ * @Date: 04.05.2020
+ * @Time: 15:00
  */
 
 namespace Phore\Datalytics\Core\OutputFormat;
@@ -14,20 +14,21 @@ use Phore\FileSystem\PhoreTempFile;
 
 /**
  * Class OticOutputFormat
+ *
  * @package Phore\Datalytics\Core\OutputFormat
  */
 class OticOutputFormat implements OutputFormat
 {
     /**
-     * @var array
+     * @var array $header
      */
     private $header = [];
     /**
-     * @var OticWriter
+     * @var OticWriter $oticWriter
      */
     private $oticWriter;
     /**
-     * @var PhoreTempFile
+     * @var PhoreTempFile $tempFile
      */
     private $tempFile;
 
@@ -51,8 +52,9 @@ class OticOutputFormat implements OutputFormat
      * $oticOutputFormat->mapName('sigName1', 'firstName');
      * ```
      *
-     * @param string $signalName
+     * @param string      $signalName
      * @param string|null $headerAlias
+     *
      * @return void
      */
     public function mapName(string $signalName, string $headerAlias = null): void
@@ -78,8 +80,9 @@ class OticOutputFormat implements OutputFormat
      *
      * @param float $ts
      * @param array $data
-     * @throws InvalidArgumentException
+     *
      * @return bool returns true if everything worked
+     * @throws InvalidArgumentException
      */
     public function sendData(float $ts, array $data): bool
     {
@@ -99,6 +102,7 @@ class OticOutputFormat implements OutputFormat
 
     /**
      * sets additional http headers for a file-download
+     *
      * @return void
      */
     public function sendHttpHeaders(): void
@@ -111,8 +115,8 @@ class OticOutputFormat implements OutputFormat
     /**
      * closes the otic-tempfile and sends it through the output
      *
-     * @throws FileAccessException
      * @return void
+     * @throws FileAccessException
      */
     public function close(): void
     {
