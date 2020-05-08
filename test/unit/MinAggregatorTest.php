@@ -23,4 +23,11 @@ class MinAggregatorTest extends TestCase
         $minAggregator = new MinAggregator();
         $this->assertNull($minAggregator->getAggregated());
     }
+
+    public function testFloatReturnValue()
+    {
+        $ag = new MinAggregator();
+        $ag->addValue(1.5);
+        $this->assertEquals(1.5 , $ag->getAggregated());
+    }
 }

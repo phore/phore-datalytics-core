@@ -37,7 +37,7 @@ class SumAggregator implements Aggregator
     }
 
     /**
-     * @return float|int|mixed|null
+     * @return float|int|null
      */
     public function getAggregated()
     {

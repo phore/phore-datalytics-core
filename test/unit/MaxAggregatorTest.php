@@ -23,4 +23,11 @@ class MaxAggregatorTest extends TestCase
         $maxAggregator = new MaxAggregator();
         $this->assertNull($maxAggregator->getAggregated());
     }
+
+    public function testFloatReturnValue()
+    {
+        $ag = new MaxAggregator();
+        $ag->addValue(1.5);
+        $this->assertEquals(1.5 , $ag->getAggregated());
+    }
 }

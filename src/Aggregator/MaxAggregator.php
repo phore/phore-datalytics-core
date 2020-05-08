@@ -38,7 +38,7 @@ class MaxAggregator implements Aggregator
     /**
      * @return int|null
      */
-    public function getAggregated(): ?int
+    public function getAggregated()
     {
         if ($this->max === -INF) {
             return null;

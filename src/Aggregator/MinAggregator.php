@@ -37,7 +37,7 @@ class MinAggregator implements Aggregator
     }
 
     /**
-     * @return mixed|null
+     * @return float|int|null
      */
     public function getAggregated()
     {

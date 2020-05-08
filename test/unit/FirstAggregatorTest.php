@@ -23,4 +23,11 @@ class FirstAggregatorTest extends TestCase
         $firstAggregator->reset();
         $this->assertNull($firstAggregator->getAggregated());
     }
+
+    public function testFloatReturnValue()
+    {
+        $ag = new FirstAggregator();
+        $ag->addValue(1.5);
+        $this->assertEquals(1.5 , $ag->getAggregated());
+    }
 }

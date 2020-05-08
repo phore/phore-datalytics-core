@@ -17,4 +17,12 @@ class LastAggregatorTest extends TestCase
         $lastAggregator->reset();
         $this->assertNull($lastAggregator->getAggregated());
     }
+
+    public function testFloatReturnValue()
+    {
+        $ag = new LastAggregator();
+        $ag->addValue(1.5);
+        $this->assertEquals(1.5 , $ag->getAggregated());
+    }
+
 }
