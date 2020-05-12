@@ -9,4 +9,4 @@ command:
     - "vendor/talpa/otic-php/lib/install-otic-extension.sh"
 
   test:
-    - "phpunit"
+    - "phpunit --stderr"

@@ -39,9 +39,9 @@ class OticOutputFormatTest extends TestCase
         $oticWriter->inject('1234', 'sigName3', 4, '');
         $oticWriter->close();
         $contents = $file->get_contents();
+        $oticOutputFormat->close();
         $this->expectOutputString($contents);
 
-        $oticOutputFormat->close();
     }
 
 }

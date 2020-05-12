@@ -109,7 +109,6 @@ class OticOutputFormat implements OutputFormat
     {
         header('Content-Description: File Transfer');
         header('Content-type:  application/octet-stream; charset=utf-8');
-        header('Content-Length: ' . $this->tempFile->getFilesize());
     }
 
     /**
@@ -121,6 +120,7 @@ class OticOutputFormat implements OutputFormat
     public function close(): void
     {
         $this->oticWriter->close();
+        header('Content-Length: ' . $this->tempFile->getFilesize());
         readfile($this->tempFile);
         $this->tempFile->unlink();
     }
