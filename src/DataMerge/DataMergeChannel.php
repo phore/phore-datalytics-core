@@ -13,57 +13,95 @@ namespace Phore\Datalytics\Core\DataMerge;
 class DataMergeChannel
 {
 
-    private $buffer = [];
+    private $buffer = null;
     private $isClosed = false;
 
+    private $reader;
+
+    public function __construct(callable $reader)
+    {
+        $this->reader = $reader;
+    }
+
+
     /**
-     * @var DataMerger
+     * Set the reader to read a dataset. The reader must return a
+     * array with a timestamp at index 1 and any data at index 2
+     *
+     * ```
+     * function() {
+     *  return [ (int)$ts, ["some"=>"data"] ];
+     * }
+     * ```
+     *
+     * The reader should return NULL if no more data is available
+     *
+     * @param callable $fn
      */
-    private $dataMerger;
-
-    public function __construct(DataMerger $dataMerger)
+    public function setReader(callable $fn)
     {
-        $this->dataMerger = $dataMerger;
+        $this->reader = $fn;
     }
 
 
-    public function push(float $ts, $data)
+    /**
+     * Reads the next dataset from the reader and
+     * stores it into the buffer.
+     *
+     * @return bool
+     */
+    public function readNext()
     {
-        if ($this->isClosed)
-            throw new \InvalidArgumentException("Channel is already closed.");
-        $this->buffer[] = [$ts, $data];
-        $this->dataMerger->__runQueue();
+        $this->buffer = ($this->reader)();
+        if ($this->buffer === null) {
+            $this->isClosed = true;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Read until the buffer
+     *
+     * @param float $ts
+     */
+    public function bufferReadUntil(float $ts)
+    {
+        while ($this->buffer !== null && $this->buffer[0] < $ts)
+            $this->readNext();
     }
 
 
-    public function close()
+    /**
+     * Return the current ts in the buffer
+     *
+     * Reads the first dataset if the buffer is
+     * empty.
+     *
+     * @return float|null
+     */
+    public function getBufferTs() : ?float
     {
-        $this->isClosed = true;
-        $this->dataMerger->__runQueue();
+        if ($this->buffer === null && $this->isClosed === false) {
+            // First read attempt
+            $this->readNext();
+        }
+
+        if ($this->buffer !== null)
+            return $this->buffer[0];
+        return null;
     }
 
 
-
-    public function __isReady()
+    /**
+     * return the contents of the current Buffer
+     *
+     * @return array
+     */
+    public function getData() : array
     {
-        if (count ($this->buffer) > 0 || $this->isClosed)
-            return true;
-        return false;
+        return $this->buffer;
     }
-
-
-    public function __getNextTs()
-    {
-        if (count ($this->buffer) === 0)
-            return null;
-        return $this->buffer[count($this->buffer)-1][0];
-    }
-
-    public function __pull() : array
-    {
-        return array_pop($this->buffer);
-    }
-
 
 
 }

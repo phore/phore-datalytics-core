@@ -20,64 +20,70 @@ class DataMerger
     private $channels = [];
 
     /**
-     * @var TimeSeries
+     * @var callable
      */
-    private $targetTimeSeries;
+    private $writer;
 
 
-    public function __construct(TimeSeries $targetTimeSeries)
+    public function __construct()
     {
-        $this->targetTimeSeries = $targetTimeSeries;
     }
 
 
-    public function getInputChannel() : DataMergeChannel
+    public function addInputChannel(DataMergeChannel $dataMergeChannel) : DataMergeChannel
     {
-        return $this->channels[] = new DataMergeChannel($this);
+        return $this->channels[] = $dataMergeChannel;
     }
 
-
-    private function __runSingleQueue(&$allChannelsClosed)
+    /**
+     * Set the writer function
+     *
+     * The writer function is called for each dataset from each channel
+     *
+     *
+     * ```
+     * $c->setWriter(function($data) {
+     *      echo "ts: " . $data[0];
+     *      echo "data: " . print_r($data[1], true);
+     * });
+     * ```
+     *
+     * @param callable $writer
+     */
+    public function setWriter(callable $writer)
     {
-        $lowestChannel = null;
-        $lowestTs = null;
-        $allChannelsClosed = true;
-        foreach ($this->channels as $channel) {
-            if ( ! $channel->__isReady()) {
-                $allChannelsClosed = false;
-                return false;
+        $this->writer = $writer;
+    }
+
+    public function run()
+    {
+
+        while(true) {
+            $lowestChannel = null;
+            $lowestTs = PHP_INT_MAX;
+
+            // Find the channel with the lowest timestamp in buffered data
+            foreach ($this->channels as $idx => $channel) {
+                $curChannelTs = $channel->getBufferTs();
+                if ($curChannelTs === null)
+                    continue; // No more data in channel
+
+                if ($curChannelTs < $lowestTs) {
+                    $lowestTs = $curChannelTs;
+                    $lowestChannel = $idx;
+                }
             }
-            $curNextTs = $channel->__getNextTs();
-            if ($curNextTs === null)
-                continue; // No more data in this channel (closed)
 
-            $allChannelsClosed = false;
-            if ($curNextTs < $lowestTs || $lowestTs === null) {
-                $lowestChannel = $channel;
-                $lowestTs = $channel->__getNextTs();
+            if ($lowestChannel === null) {
+                // No more data found
+                return true;
             }
+
+            $chan = $this->channels[$lowestChannel];
+            ($this->writer)($chan->getData());
+            // Move to the next dataset
+            $chan->readNext();
         }
-        if ($lowestChannel === null)
-            return false;
-
-        $data = $lowestChannel->__pull();
-        foreach ($data[1] as $key => $value)
-            $this->targetTimeSeries->push($data[0], $key, $value);
-        return true;
-
     }
-
-    public function __runQueue()
-    {
-        while ($this->__runSingleQueue($allChannelsClosed) === true);
-        if ($allChannelsClosed) {
-            $this->targetTimeSeries->close();
-        }
-        return true;
-    }
-
-
-
-
 
 }
